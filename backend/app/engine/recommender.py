@@ -2,7 +2,7 @@
 Hybrid Music Recommendation Engine.
 
 Unifies:
-- Shared Multimodal Track Embeddings + FAISS Inner-Product Retrieval
+- Shared Multimodal Track Embeddings + exact inner-product retrieval
 - Collaborative Filtering (Item-KNN Co-occurrence + NeuMF Long-Term Profile)
 - Dual-Horizon Session Transformer (Short-Term + Long-Term Gated Context)
 - Familiarity vs. Discovery Pool Controller + Self-Information Novelty
@@ -104,12 +104,26 @@ class HybridRecommendationEngine:
                 "positive_items": pos_set,
             }
 
-        # Load trained embeddings, FAISS index, CF, NeuMF, and Dual-Horizon Transformer
+        # Load trained embeddings, exact vector index, CF, NeuMF, and Dual-Horizon Transformer
         self._load_models()
         self.shuffle_engine = AdaptiveShuffleEngine()
         self.feedback_states: dict[int, UserFeedbackState] = {}
 
     def _load_models(self) -> None:
+        required_paths = [
+            self.artifacts_dir / "neumf_checkpoint.pt",
+            self.artifacts_dir / "transformer_checkpoint.pt",
+            self.artifacts_dir / "track_embeddings.npy",
+            self.artifacts_dir / "item_cf.pkl",
+        ]
+        missing = [str(path) for path in required_paths if not path.exists()]
+        if missing:
+            raise RuntimeError(
+                "Generated model artifacts are missing: "
+                + ", ".join(missing)
+                + ". Run backend/training/train_and_evaluate.py after building the processed dataset."
+            )
+
         norm_cols = self.stats["norm_audio_cols"]
         audio_tensor = torch.tensor(self.tracks_df[norm_cols].to_numpy(dtype=np.float32))
         artist_tensor = torch.tensor(self.artist_ids, dtype=torch.long)
@@ -260,7 +274,7 @@ class HybridRecommendationEngine:
         known_items = hist["known_items"] | fb_state.liked_items | set(fb_state.played_items_recent)
         blocked_items = fb_state.disliked_items | set(fb_state.played_items_recent[-12:])
 
-        # 1. Shared Embedding Cosine Similarity via FAISS over full catalog
+        # 1. Shared Embedding Cosine Similarity over the full catalog
         cos_scores = (self.item_embeddings @ u_vec).astype(np.float32)
 
         # 2. Item-KNN Collaborative Filtering Score from positive history

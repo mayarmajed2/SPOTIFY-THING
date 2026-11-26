@@ -99,7 +99,7 @@ class MultimodalTrackEncoder(nn.Module):
 
     @torch.no_grad()
     def export_all_embeddings(self, batch_size: int = 4096, device: torch.device | str = "cpu") -> torch.Tensor:
-        """Export [num_items, embed_dim] matrix for FAISS indexing."""
+        """Export [num_items, embed_dim] matrix for exact vector indexing."""
         self.eval()
         embs = []
         for start in range(0, self.num_items, batch_size):
