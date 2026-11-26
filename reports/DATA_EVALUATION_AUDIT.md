@@ -10,7 +10,9 @@ The executable pipeline combines three public sources:
 
 The checked-in report records 40,000 tracks, 26,113 exact-audio tracks, 8,146 artists, 114 primary genres, 943 users, 327,754 retained interactions, and 6,932 curated playlists. These counts are consistent with the report and source summary fields. They are not proof that a rerun will reproduce the report exactly.
 
-The README previously claimed 2.06M matched Last.fm events. Source code and the checked-in report do not support that figure; the README has been corrected to 327,754 retained interactions.
+The README previously presented 2.06M as retained interactions. A fresh build confirms 2,067,551 raw matched Last.fm events and 327,754 retained interactions. The README now reports both counts.
+
+A fresh CPU-only build completed data construction in 53.26 seconds with the default 40,000-track limit and 10 MPD slices.
 
 ## Methodology Findings
 

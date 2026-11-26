@@ -6,7 +6,7 @@ The repository is a compact, source-complete demo of a music recommendation and 
 
 ## Highest-Risk Findings
 
-1. The README overstated matched Last.fm events as 2.06M; the checked-in report records 327,754 retained interactions. The README was corrected.
+1. The README needed to distinguish matched Last.fm events from retained interactions. A fresh build confirmed 2,067,551 matched events and 327,754 retained interactions; the README was corrected.
 2. Benchmark claims are unverified against a fresh rerun. Raw datasets, processed Parquet files, model checkpoints, dataset hashes, and snapshot revisions are absent.
 3. The data pipeline creates inferred weak labels and prior-derived synthetic audio for MPD tracks without exact Spotify audio. These values should not be described as measured listening or measured acoustics.
 4. The serving engine previously could initialize with random/untrained model state when processed data existed but artifacts were missing. It now fails explicitly unless all required generated artifacts exist.
@@ -31,7 +31,7 @@ The repository is a compact, source-complete demo of a music recommendation and 
 - Backend engine/shuffle tests: **3 passed**.
 - Next.js production build: **passed**.
 - Python source compilation: not used as a separate gate; focused pytest and source execution exercised the relevant backend modules.
-- Full data download/training/evaluation was not run because the task requires restricted or external dataset acquisition and GPU training setup not established in the checkout.
+- Data construction completed with the default public-data settings. Full CPU-only training was stopped after about 70 minutes without complete NeuMF/Transformer checkpoints, so the benchmark suite was not rerun and no replacement methodology was used.
 - Full API E2E was not run because processed data and model artifacts are absent and now correctly block startup.
 - No restricted dataset or secret was downloaded or distributed.
 - No commit, push, or pull request was created.
