@@ -1,0 +1,161 @@
+{
+  "device": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "dataset_stats": {
+    "num_tracks": 40000,
+    "num_exact_audio_tracks": 26113,
+    "num_artists": 8146,
+    "num_genres": 114,
+    "num_users": 943,
+    "num_interactions": 327754,
+    "num_curated_playlists": 6932,
+    "action_distribution": {
+      "early_skip": 1148,
+      "partial_play": 4113,
+      "complete_play": 126229,
+      "repeat_listen": 3180,
+      "favorite_listen": 193084
+    },
+    "audio_feature_cols": [
+      "danceability",
+      "energy",
+      "valence",
+      "tempo",
+      "acousticness",
+      "instrumentalness",
+      "speechiness",
+      "liveness",
+      "loudness",
+      "key",
+      "mode",
+      "explicit_num"
+    ],
+    "norm_audio_cols": [
+      "norm_danceability",
+      "norm_energy",
+      "norm_valence",
+      "norm_tempo",
+      "norm_acousticness",
+      "norm_instrumentalness",
+      "norm_speechiness",
+      "norm_liveness",
+      "norm_loudness",
+      "norm_key",
+      "norm_mode",
+      "norm_explicit_num"
+    ],
+    "build_seconds": 48.81
+  },
+  "recommendation_benchmarks": {
+    "Popularity": {
+      "HR@10": 0.2083,
+      "NDCG@10": 0.1074,
+      "MRR@10": 0.0764,
+      "ILD@20": 0.6939,
+      "Novelty@20": 0.2161,
+      "CatalogCoverage@20": 0.0007,
+      "UnseenArtistRatio@20": 0.9529
+    },
+    "Item-KNN CF": {
+      "HR@10": 0.6717,
+      "NDCG@10": 0.5008,
+      "MRR@10": 0.4468,
+      "ILD@20": 0.6528,
+      "Novelty@20": 0.1426,
+      "CatalogCoverage@20": 0.0974,
+      "UnseenArtistRatio@20": 0.4571
+    },
+    "BPR-MF": {
+      "HR@10": 0.7,
+      "NDCG@10": 0.4311,
+      "MRR@10": 0.3477,
+      "ILD@20": 0.7181,
+      "Novelty@20": 0.0659,
+      "CatalogCoverage@20": 0.0324,
+      "UnseenArtistRatio@20": 0.5587
+    },
+    "NeuMF (Multimodal)": {
+      "HR@10": 0.76,
+      "NDCG@10": 0.6059,
+      "MRR@10": 0.5568,
+      "ILD@20": 0.682,
+      "Novelty@20": 0.1226,
+      "CatalogCoverage@20": 0.1108,
+      "UnseenArtistRatio@20": 0.5208
+    },
+    "Dual-Horizon Transformer": {
+      "HR@10": 0.775,
+      "NDCG@10": 0.6289,
+      "MRR@10": 0.5839,
+      "ILD@20": 0.633,
+      "Novelty@20": 0.1794,
+      "CatalogCoverage@20": 0.13,
+      "UnseenArtistRatio@20": 0.5831
+    },
+    "Proposed Hybrid + Discovery": {
+      "HR@10": 0.7967,
+      "NDCG@10": 0.6631,
+      "MRR@10": 0.6214,
+      "ILD@20": 0.6605,
+      "Novelty@20": 0.1958,
+      "CatalogCoverage@20": 0.1319,
+      "UnseenArtistRatio@20": 0.5314
+    }
+  },
+  "shuffle_benchmarks": {
+    "Fisher-Yates Random": {
+      "artist_clump_rate": 0.114,
+      "min_artist_gap": 2.01,
+      "mean_artist_gap": 9.1035,
+      "genre_switch_rate": 0.7574,
+      "local_window_diversity": 0.3825,
+      "acoustic_smoothness": 0.7062,
+      "mean_bpm_jump": 21.451,
+      "session_ndcg": 0.3063,
+      "discovery_pacing_std": 0.1903
+    },
+    "Spotify-Style Artist Spaced": {
+      "artist_clump_rate": 0.0479,
+      "min_artist_gap": 6.205,
+      "mean_artist_gap": 12.0438,
+      "genre_switch_rate": 0.787,
+      "local_window_diversity": 0.3905,
+      "acoustic_smoothness": 0.698,
+      "mean_bpm_jump": 21.9993,
+      "session_ndcg": 0.3068,
+      "discovery_pacing_std": 0.185
+    },
+    "Greedy Relevance Order": {
+      "artist_clump_rate": 0.1587,
+      "min_artist_gap": 1.61,
+      "mean_artist_gap": 6.761,
+      "genre_switch_rate": 0.7308,
+      "local_window_diversity": 0.2966,
+      "acoustic_smoothness": 0.7133,
+      "mean_bpm_jump": 21.0218,
+      "session_ndcg": 0.74,
+      "discovery_pacing_std": 0.192
+    },
+    "Proposed Adaptive Shuffle": {
+      "artist_clump_rate": 0.0763,
+      "min_artist_gap": 3.525,
+      "mean_artist_gap": 9.3748,
+      "genre_switch_rate": 0.8224,
+      "local_window_diversity": 0.3575,
+      "acoustic_smoothness": 0.7187,
+      "mean_bpm_jump": 20.648,
+      "session_ndcg": 0.525,
+      "discovery_pacing_std": 0.1581
+    }
+  },
+  "feedback_adaptation_benchmarks": {
+    "Static_Before_Feedback": {
+      "FatiguedGenreShare@20": 0.383,
+      "NewTargetGenreShare@20": 0.0095
+    },
+    "Adapted_After_Feedback": {
+      "FatiguedGenreShare@20": 0.0005,
+      "NewTargetGenreShare@20": 0.4445
+    }
+  },
+  "total_runtime_seconds": 1023.54
+}
