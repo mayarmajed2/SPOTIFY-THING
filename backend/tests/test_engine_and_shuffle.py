@@ -111,3 +111,13 @@ def test_multimodal_neumf_and_transformer_shapes_and_cold_start() -> None:
     assert u_fused.shape == (2, 128)
     assert gate.shape == (2, 128)
     assert not torch.isnan(u_fused).any()
+
+    short_weight = 0.75
+    overridden, overridden_gate = tr.fuse_horizons(u_long, u_short, short_term_override=short_weight)
+    expected = torch.nn.functional.normalize(
+        (1.0 - short_weight) * u_long + short_weight * u_short,
+        p=2,
+        dim=-1,
+    )
+    assert torch.allclose(overridden, expected, atol=1e-5)
+    assert torch.allclose(overridden_gate, torch.full_like(overridden_gate, 1.0 - short_weight), atol=1e-6)

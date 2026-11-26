@@ -31,6 +31,15 @@ REPORTS_DIR = Path(os.getenv("REPORTS_DIR", str(ROOT_DIR / "data" / "reports")))
 
 ENGINE: HybridRecommendationEngine | None = None
 
+_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    ).split(",")
+    if origin.strip()
+]
+
 ACTION_LABELS = {
     0: "early_skip",
     1: "partial_play",
@@ -68,7 +77,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
