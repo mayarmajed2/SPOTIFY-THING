@@ -1,0 +1,967 @@
+{
+  "device": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "seed": 42,
+  "num_eval_users": 500,
+  "num_items": 40000,
+  "audio_scaler_stats": {
+    "danceability": {
+      "mean": 0.522949,
+      "std": 0.169752
+    },
+    "energy": {
+      "mean": 0.681448,
+      "std": 0.242536
+    },
+    "valence": {
+      "mean": 0.476172,
+      "std": 0.256971
+    },
+    "tempo": {
+      "mean": 122.936867,
+      "std": 29.141748
+    },
+    "acousticness": {
+      "mean": 0.221774,
+      "std": 0.296451
+    },
+    "instrumentalness": {
+      "mean": 0.177878,
+      "std": 0.313388
+    },
+    "speechiness": {
+      "mean": 0.070651,
+      "std": 0.069343
+    },
+    "liveness": {
+      "mean": 0.202584,
+      "std": 0.168327
+    },
+    "loudness": {
+      "mean": -8.234044,
+      "std": 4.164713
+    },
+    "key": {
+      "mean": 5.285065,
+      "std": 3.567829
+    },
+    "mode": {
+      "mean": 0.64569,
+      "std": 0.478305
+    },
+    "explicit_num": {
+      "mean": 0.076003,
+      "std": 0.265003
+    }
+  },
+  "models": {
+    "Popularity (Train-Only)": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.452,
+          "std": 0.4977,
+          "ci95_low": 0.4079,
+          "ci95_high": 0.494
+        },
+        "NDCG@10": {
+          "mean": 0.2556,
+          "std": 0.332,
+          "ci95_low": 0.2242,
+          "ci95_high": 0.2845
+        },
+        "MRR@10": {
+          "mean": 0.1959,
+          "std": 0.3126,
+          "ci95_low": 0.1669,
+          "ci95_high": 0.2225
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.012,
+          "std": 0.1089,
+          "ci95_low": 0.004,
+          "ci95_high": 0.022
+        },
+        "Recall@10": {
+          "mean": 0.012,
+          "std": 0.1089,
+          "ci95_low": 0.004,
+          "ci95_high": 0.022
+        },
+        "Precision@10": {
+          "mean": 0.0012,
+          "std": 0.0109,
+          "ci95_low": 0.0004,
+          "ci95_high": 0.0022
+        },
+        "NDCG@10": {
+          "mean": 0.0064,
+          "std": 0.0643,
+          "ci95_low": 0.0013,
+          "ci95_high": 0.0127
+        },
+        "MRR@10": {
+          "mean": 0.0047,
+          "std": 0.0554,
+          "ci95_low": 0.0007,
+          "ci95_high": 0.0103
+        },
+        "ILD@20": {
+          "mean": 0.7453,
+          "std": 0.0252,
+          "ci95_low": 0.7431,
+          "ci95_high": 0.7475
+        },
+        "Novelty@20": {
+          "mean": 0.0731,
+          "std": 0.01,
+          "ci95_low": 0.0723,
+          "ci95_high": 0.0741
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.8158,
+          "std": 0.1644,
+          "ci95_low": 0.8014,
+          "ci95_high": 0.83
+        },
+        "CatalogCoverage@20": 0.0012
+      }
+    },
+    "Item-KNN CF (Train-Only)": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.704,
+          "std": 0.4565,
+          "ci95_low": 0.666,
+          "ci95_high": 0.74
+        },
+        "NDCG@10": {
+          "mean": 0.5249,
+          "std": 0.4115,
+          "ci95_low": 0.4876,
+          "ci95_high": 0.5608
+        },
+        "MRR@10": {
+          "mean": 0.4686,
+          "std": 0.4281,
+          "ci95_low": 0.4304,
+          "ci95_high": 0.5055
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.21,
+          "std": 0.4073,
+          "ci95_low": 0.176,
+          "ci95_high": 0.246
+        },
+        "Recall@10": {
+          "mean": 0.21,
+          "std": 0.4073,
+          "ci95_low": 0.176,
+          "ci95_high": 0.246
+        },
+        "Precision@10": {
+          "mean": 0.021,
+          "std": 0.0407,
+          "ci95_low": 0.0176,
+          "ci95_high": 0.0246
+        },
+        "NDCG@10": {
+          "mean": 0.1319,
+          "std": 0.2897,
+          "ci95_low": 0.1077,
+          "ci95_high": 0.1575
+        },
+        "MRR@10": {
+          "mean": 0.1085,
+          "std": 0.2736,
+          "ci95_low": 0.0861,
+          "ci95_high": 0.1322
+        },
+        "ILD@20": {
+          "mean": 0.6389,
+          "std": 0.1238,
+          "ci95_low": 0.6279,
+          "ci95_high": 0.6502
+        },
+        "Novelty@20": {
+          "mean": 0.352,
+          "std": 0.202,
+          "ci95_low": 0.3347,
+          "ci95_high": 0.3695
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.4626,
+          "std": 0.2918,
+          "ci95_low": 0.4388,
+          "ci95_high": 0.4889
+        },
+        "CatalogCoverage@20": 0.0775
+      }
+    },
+    "BPR-MF": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.648,
+          "std": 0.4776,
+          "ci95_low": 0.604,
+          "ci95_high": 0.686
+        },
+        "NDCG@10": {
+          "mean": 0.4159,
+          "std": 0.3804,
+          "ci95_low": 0.3811,
+          "ci95_high": 0.4497
+        },
+        "MRR@10": {
+          "mean": 0.3442,
+          "std": 0.3865,
+          "ci95_low": 0.3116,
+          "ci95_high": 0.3787
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.052,
+          "std": 0.222,
+          "ci95_low": 0.032,
+          "ci95_high": 0.074
+        },
+        "Recall@10": {
+          "mean": 0.052,
+          "std": 0.222,
+          "ci95_low": 0.032,
+          "ci95_high": 0.074
+        },
+        "Precision@10": {
+          "mean": 0.0052,
+          "std": 0.0222,
+          "ci95_low": 0.0032,
+          "ci95_high": 0.0074
+        },
+        "NDCG@10": {
+          "mean": 0.0284,
+          "std": 0.1356,
+          "ci95_low": 0.0172,
+          "ci95_high": 0.041
+        },
+        "MRR@10": {
+          "mean": 0.0213,
+          "std": 0.12,
+          "ci95_low": 0.0115,
+          "ci95_high": 0.0327
+        },
+        "ILD@20": {
+          "mean": 0.7089,
+          "std": 0.0392,
+          "ci95_low": 0.7049,
+          "ci95_high": 0.7125
+        },
+        "Novelty@20": {
+          "mean": 0.175,
+          "std": 0.062,
+          "ci95_low": 0.1697,
+          "ci95_high": 0.1806
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.5983,
+          "std": 0.2199,
+          "ci95_low": 0.5777,
+          "ci95_high": 0.6171
+        },
+        "CatalogCoverage@20": 0.0169
+      }
+    },
+    "NeuMF \u2014 Interaction Only": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.822,
+          "std": 0.3825,
+          "ci95_low": 0.788,
+          "ci95_high": 0.852
+        },
+        "NDCG@10": {
+          "mean": 0.6065,
+          "std": 0.3766,
+          "ci95_low": 0.5735,
+          "ci95_high": 0.6398
+        },
+        "MRR@10": {
+          "mean": 0.5385,
+          "std": 0.4107,
+          "ci95_low": 0.5021,
+          "ci95_high": 0.574
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.15,
+          "std": 0.3571,
+          "ci95_low": 0.122,
+          "ci95_high": 0.18
+        },
+        "Recall@10": {
+          "mean": 0.15,
+          "std": 0.3571,
+          "ci95_low": 0.122,
+          "ci95_high": 0.18
+        },
+        "Precision@10": {
+          "mean": 0.015,
+          "std": 0.0357,
+          "ci95_low": 0.0122,
+          "ci95_high": 0.018
+        },
+        "NDCG@10": {
+          "mean": 0.0925,
+          "std": 0.2465,
+          "ci95_low": 0.0723,
+          "ci95_high": 0.1147
+        },
+        "MRR@10": {
+          "mean": 0.075,
+          "std": 0.2289,
+          "ci95_low": 0.0554,
+          "ci95_high": 0.0953
+        },
+        "ILD@20": {
+          "mean": 0.7528,
+          "std": 0.0616,
+          "ci95_low": 0.7476,
+          "ci95_high": 0.7585
+        },
+        "Novelty@20": {
+          "mean": 0.2777,
+          "std": 0.07,
+          "ci95_low": 0.2714,
+          "ci95_high": 0.2836
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.5439,
+          "std": 0.2108,
+          "ci95_low": 0.5256,
+          "ci95_high": 0.5615
+        },
+        "CatalogCoverage@20": 0.0576
+      }
+    },
+    "NeuMF \u2014 GMF Only": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.742,
+          "std": 0.4375,
+          "ci95_low": 0.704,
+          "ci95_high": 0.7821
+        },
+        "NDCG@10": {
+          "mean": 0.4584,
+          "std": 0.3599,
+          "ci95_low": 0.4264,
+          "ci95_high": 0.4916
+        },
+        "MRR@10": {
+          "mean": 0.371,
+          "std": 0.3775,
+          "ci95_low": 0.3369,
+          "ci95_high": 0.4051
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.07,
+          "std": 0.2551,
+          "ci95_low": 0.05,
+          "ci95_high": 0.092
+        },
+        "Recall@10": {
+          "mean": 0.07,
+          "std": 0.2551,
+          "ci95_low": 0.05,
+          "ci95_high": 0.092
+        },
+        "Precision@10": {
+          "mean": 0.007,
+          "std": 0.0255,
+          "ci95_low": 0.005,
+          "ci95_high": 0.0092
+        },
+        "NDCG@10": {
+          "mean": 0.0329,
+          "std": 0.1326,
+          "ci95_low": 0.0218,
+          "ci95_high": 0.0456
+        },
+        "MRR@10": {
+          "mean": 0.0219,
+          "std": 0.1072,
+          "ci95_low": 0.013,
+          "ci95_high": 0.033
+        },
+        "ILD@20": {
+          "mean": 0.7362,
+          "std": 0.0484,
+          "ci95_low": 0.7318,
+          "ci95_high": 0.7406
+        },
+        "Novelty@20": {
+          "mean": 0.2248,
+          "std": 0.0655,
+          "ci95_low": 0.219,
+          "ci95_high": 0.2305
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.5946,
+          "std": 0.2171,
+          "ci95_low": 0.575,
+          "ci95_high": 0.614
+        },
+        "CatalogCoverage@20": 0.0328
+      }
+    },
+    "NeuMF \u2014 MLP Only": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.784,
+          "std": 0.4115,
+          "ci95_low": 0.75,
+          "ci95_high": 0.82
+        },
+        "NDCG@10": {
+          "mean": 0.4858,
+          "std": 0.3516,
+          "ci95_low": 0.4551,
+          "ci95_high": 0.5174
+        },
+        "MRR@10": {
+          "mean": 0.3934,
+          "std": 0.3757,
+          "ci95_low": 0.3607,
+          "ci95_high": 0.4265
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.076,
+          "std": 0.265,
+          "ci95_low": 0.054,
+          "ci95_high": 0.098
+        },
+        "Recall@10": {
+          "mean": 0.076,
+          "std": 0.265,
+          "ci95_low": 0.054,
+          "ci95_high": 0.098
+        },
+        "Precision@10": {
+          "mean": 0.0076,
+          "std": 0.0265,
+          "ci95_low": 0.0054,
+          "ci95_high": 0.0098
+        },
+        "NDCG@10": {
+          "mean": 0.0422,
+          "std": 0.1642,
+          "ci95_low": 0.0287,
+          "ci95_high": 0.0571
+        },
+        "MRR@10": {
+          "mean": 0.0319,
+          "std": 0.1457,
+          "ci95_low": 0.0199,
+          "ci95_high": 0.0454
+        },
+        "ILD@20": {
+          "mean": 0.6908,
+          "std": 0.0834,
+          "ci95_low": 0.6839,
+          "ci95_high": 0.6982
+        },
+        "Novelty@20": {
+          "mean": 0.2953,
+          "std": 0.1081,
+          "ci95_low": 0.2857,
+          "ci95_high": 0.3045
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.4925,
+          "std": 0.2373,
+          "ci95_low": 0.4724,
+          "ci95_high": 0.5129
+        },
+        "CatalogCoverage@20": 0.0654
+      }
+    },
+    "NeuMF \u2014 Full Multimodal": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.84,
+          "std": 0.3666,
+          "ci95_low": 0.808,
+          "ci95_high": 0.872
+        },
+        "NDCG@10": {
+          "mean": 0.6209,
+          "std": 0.3637,
+          "ci95_low": 0.5903,
+          "ci95_high": 0.6532
+        },
+        "MRR@10": {
+          "mean": 0.5506,
+          "std": 0.3981,
+          "ci95_low": 0.5178,
+          "ci95_high": 0.5859
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.172,
+          "std": 0.3774,
+          "ci95_low": 0.138,
+          "ci95_high": 0.206
+        },
+        "Recall@10": {
+          "mean": 0.172,
+          "std": 0.3774,
+          "ci95_low": 0.138,
+          "ci95_high": 0.206
+        },
+        "Precision@10": {
+          "mean": 0.0172,
+          "std": 0.0377,
+          "ci95_low": 0.0138,
+          "ci95_high": 0.0206
+        },
+        "NDCG@10": {
+          "mean": 0.1089,
+          "std": 0.2667,
+          "ci95_low": 0.0859,
+          "ci95_high": 0.1321
+        },
+        "MRR@10": {
+          "mean": 0.0897,
+          "std": 0.2492,
+          "ci95_low": 0.069,
+          "ci95_high": 0.1115
+        },
+        "ILD@20": {
+          "mean": 0.7627,
+          "std": 0.0583,
+          "ci95_low": 0.7581,
+          "ci95_high": 0.7679
+        },
+        "Novelty@20": {
+          "mean": 0.2826,
+          "std": 0.0674,
+          "ci95_low": 0.2766,
+          "ci95_high": 0.2884
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.5333,
+          "std": 0.1915,
+          "ci95_low": 0.5171,
+          "ci95_high": 0.549
+        },
+        "CatalogCoverage@20": 0.0625
+      }
+    },
+    "Transformer \u2014 Short-Term Only": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.764,
+          "std": 0.4246,
+          "ci95_low": 0.724,
+          "ci95_high": 0.798
+        },
+        "NDCG@10": {
+          "mean": 0.6259,
+          "std": 0.421,
+          "ci95_low": 0.5882,
+          "ci95_high": 0.6599
+        },
+        "MRR@10": {
+          "mean": 0.5836,
+          "std": 0.4471,
+          "ci95_low": 0.5452,
+          "ci95_high": 0.6212
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.422,
+          "std": 0.4939,
+          "ci95_low": 0.378,
+          "ci95_high": 0.466
+        },
+        "Recall@10": {
+          "mean": 0.422,
+          "std": 0.4939,
+          "ci95_low": 0.378,
+          "ci95_high": 0.466
+        },
+        "Precision@10": {
+          "mean": 0.0422,
+          "std": 0.0494,
+          "ci95_low": 0.0378,
+          "ci95_high": 0.0466
+        },
+        "NDCG@10": {
+          "mean": 0.3492,
+          "std": 0.4411,
+          "ci95_low": 0.3107,
+          "ci95_high": 0.3887
+        },
+        "MRR@10": {
+          "mean": 0.3263,
+          "std": 0.439,
+          "ci95_low": 0.2886,
+          "ci95_high": 0.3653
+        },
+        "ILD@20": {
+          "mean": 0.6414,
+          "std": 0.0835,
+          "ci95_low": 0.6339,
+          "ci95_high": 0.6486
+        },
+        "Novelty@20": {
+          "mean": 0.4476,
+          "std": 0.0876,
+          "ci95_low": 0.4398,
+          "ci95_high": 0.4551
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.6157,
+          "std": 0.2182,
+          "ci95_low": 0.5972,
+          "ci95_high": 0.634
+        },
+        "CatalogCoverage@20": 0.1098
+      }
+    },
+    "Dual-Horizon Transformer": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.784,
+          "std": 0.4115,
+          "ci95_low": 0.748,
+          "ci95_high": 0.818
+        },
+        "NDCG@10": {
+          "mean": 0.6474,
+          "std": 0.4116,
+          "ci95_low": 0.6122,
+          "ci95_high": 0.682
+        },
+        "MRR@10": {
+          "mean": 0.6051,
+          "std": 0.4383,
+          "ci95_low": 0.567,
+          "ci95_high": 0.6429
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.43,
+          "std": 0.4951,
+          "ci95_low": 0.386,
+          "ci95_high": 0.472
+        },
+        "Recall@10": {
+          "mean": 0.43,
+          "std": 0.4951,
+          "ci95_low": 0.386,
+          "ci95_high": 0.472
+        },
+        "Precision@10": {
+          "mean": 0.043,
+          "std": 0.0495,
+          "ci95_low": 0.0386,
+          "ci95_high": 0.0472
+        },
+        "NDCG@10": {
+          "mean": 0.3568,
+          "std": 0.4442,
+          "ci95_low": 0.3194,
+          "ci95_high": 0.3953
+        },
+        "MRR@10": {
+          "mean": 0.3339,
+          "std": 0.4431,
+          "ci95_low": 0.2974,
+          "ci95_high": 0.3726
+        },
+        "ILD@20": {
+          "mean": 0.6523,
+          "std": 0.074,
+          "ci95_low": 0.6456,
+          "ci95_high": 0.659
+        },
+        "Novelty@20": {
+          "mean": 0.4432,
+          "std": 0.0857,
+          "ci95_low": 0.4359,
+          "ci95_high": 0.4506
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.5787,
+          "std": 0.2077,
+          "ci95_low": 0.5618,
+          "ci95_high": 0.5969
+        },
+        "CatalogCoverage@20": 0.1094
+      }
+    },
+    "Hybrid (Dual-Horizon + CF)": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.83,
+          "std": 0.3756,
+          "ci95_low": 0.796,
+          "ci95_high": 0.86
+        },
+        "NDCG@10": {
+          "mean": 0.6552,
+          "std": 0.3825,
+          "ci95_low": 0.6217,
+          "ci95_high": 0.6849
+        },
+        "MRR@10": {
+          "mean": 0.5999,
+          "std": 0.4163,
+          "ci95_low": 0.5641,
+          "ci95_high": 0.6324
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.284,
+          "std": 0.4509,
+          "ci95_low": 0.246,
+          "ci95_high": 0.324
+        },
+        "Recall@10": {
+          "mean": 0.284,
+          "std": 0.4509,
+          "ci95_low": 0.246,
+          "ci95_high": 0.324
+        },
+        "Precision@10": {
+          "mean": 0.0284,
+          "std": 0.0451,
+          "ci95_low": 0.0246,
+          "ci95_high": 0.0324
+        },
+        "NDCG@10": {
+          "mean": 0.1952,
+          "std": 0.3474,
+          "ci95_low": 0.1667,
+          "ci95_high": 0.2263
+        },
+        "MRR@10": {
+          "mean": 0.1681,
+          "std": 0.3353,
+          "ci95_low": 0.1413,
+          "ci95_high": 0.199
+        },
+        "ILD@20": {
+          "mean": 0.6296,
+          "std": 0.1181,
+          "ci95_low": 0.619,
+          "ci95_high": 0.6402
+        },
+        "Novelty@20": {
+          "mean": 0.3443,
+          "std": 0.1749,
+          "ci95_low": 0.3288,
+          "ci95_high": 0.359
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.4205,
+          "std": 0.2777,
+          "ci95_low": 0.3987,
+          "ci95_high": 0.4439
+        },
+        "CatalogCoverage@20": 0.0812
+      }
+    },
+    "Hybrid + Novelty": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.82,
+          "std": 0.3842,
+          "ci95_low": 0.786,
+          "ci95_high": 0.85
+        },
+        "NDCG@10": {
+          "mean": 0.6583,
+          "std": 0.3904,
+          "ci95_low": 0.6234,
+          "ci95_high": 0.6894
+        },
+        "MRR@10": {
+          "mean": 0.6074,
+          "std": 0.4227,
+          "ci95_low": 0.5703,
+          "ci95_high": 0.6405
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.298,
+          "std": 0.4574,
+          "ci95_low": 0.26,
+          "ci95_high": 0.338
+        },
+        "Recall@10": {
+          "mean": 0.298,
+          "std": 0.4574,
+          "ci95_low": 0.26,
+          "ci95_high": 0.338
+        },
+        "Precision@10": {
+          "mean": 0.0298,
+          "std": 0.0457,
+          "ci95_low": 0.026,
+          "ci95_high": 0.0338
+        },
+        "NDCG@10": {
+          "mean": 0.2024,
+          "std": 0.351,
+          "ci95_low": 0.1738,
+          "ci95_high": 0.2339
+        },
+        "MRR@10": {
+          "mean": 0.1735,
+          "std": 0.3399,
+          "ci95_low": 0.1451,
+          "ci95_high": 0.2042
+        },
+        "ILD@20": {
+          "mean": 0.6295,
+          "std": 0.1196,
+          "ci95_low": 0.6184,
+          "ci95_high": 0.6401
+        },
+        "Novelty@20": {
+          "mean": 0.3558,
+          "std": 0.1778,
+          "ci95_low": 0.3396,
+          "ci95_high": 0.3706
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.4213,
+          "std": 0.2774,
+          "ci95_low": 0.3991,
+          "ci95_high": 0.4454
+        },
+        "CatalogCoverage@20": 0.0842
+      }
+    },
+    "Hybrid + Novelty + MMR": {
+      "sampled": {
+        "HR@10": {
+          "mean": 0.82,
+          "std": 0.3842,
+          "ci95_low": 0.786,
+          "ci95_high": 0.85
+        },
+        "NDCG@10": {
+          "mean": 0.6583,
+          "std": 0.3904,
+          "ci95_low": 0.6234,
+          "ci95_high": 0.6894
+        },
+        "MRR@10": {
+          "mean": 0.6074,
+          "std": 0.4227,
+          "ci95_low": 0.5703,
+          "ci95_high": 0.6405
+        }
+      },
+      "full_catalog": {
+        "HR@10": {
+          "mean": 0.304,
+          "std": 0.46,
+          "ci95_low": 0.268,
+          "ci95_high": 0.346
+        },
+        "Recall@10": {
+          "mean": 0.304,
+          "std": 0.46,
+          "ci95_low": 0.268,
+          "ci95_high": 0.346
+        },
+        "Precision@10": {
+          "mean": 0.0304,
+          "std": 0.046,
+          "ci95_low": 0.0268,
+          "ci95_high": 0.0346
+        },
+        "NDCG@10": {
+          "mean": 0.2079,
+          "std": 0.3533,
+          "ci95_low": 0.1788,
+          "ci95_high": 0.2401
+        },
+        "MRR@10": {
+          "mean": 0.1785,
+          "std": 0.3411,
+          "ci95_low": 0.1511,
+          "ci95_high": 0.2103
+        },
+        "ILD@20": {
+          "mean": 0.692,
+          "std": 0.1083,
+          "ci95_low": 0.6833,
+          "ci95_high": 0.7019
+        },
+        "Novelty@20": {
+          "mean": 0.3631,
+          "std": 0.1705,
+          "ci95_low": 0.3479,
+          "ci95_high": 0.3772
+        },
+        "UnseenArtistRatio@20": {
+          "mean": 0.4654,
+          "std": 0.251,
+          "ci95_low": 0.4451,
+          "ci95_high": 0.4872
+        },
+        "CatalogCoverage@20": 0.0878
+      }
+    }
+  },
+  "significance_tests": {
+    "Dual-Horizon Transformer vs NeuMF \u2014 Full Multimodal": {
+      "sampled_ndcg10_delta": 0.0265,
+      "sampled_perm_p": 0.152212,
+      "full_ndcg10_delta": 0.2479,
+      "full_perm_p": 0.00025
+    },
+    "Dual-Horizon Transformer vs Transformer \u2014 Short-Term Only": {
+      "sampled_ndcg10_delta": 0.0215,
+      "sampled_perm_p": 0.001,
+      "full_ndcg10_delta": 0.0076,
+      "full_perm_p": 0.274431
+    },
+    "Hybrid (Dual-Horizon + CF) vs Dual-Horizon Transformer": {
+      "sampled_ndcg10_delta": 0.0078,
+      "sampled_perm_p": 0.545614,
+      "full_ndcg10_delta": -0.1616,
+      "full_perm_p": 0.00025
+    },
+    "Hybrid (Dual-Horizon + CF) vs Item-KNN CF (Train-Only)": {
+      "sampled_ndcg10_delta": 0.1303,
+      "sampled_perm_p": 0.00025,
+      "full_ndcg10_delta": 0.0633,
+      "full_perm_p": 0.00025
+    },
+    "NeuMF \u2014 Full Multimodal vs NeuMF \u2014 Interaction Only": {
+      "sampled_ndcg10_delta": 0.0144,
+      "sampled_perm_p": 0.311922,
+      "full_ndcg10_delta": 0.0165,
+      "full_perm_p": 0.206948
+    }
+  },
+  "runtime_seconds": 1490.98
+}

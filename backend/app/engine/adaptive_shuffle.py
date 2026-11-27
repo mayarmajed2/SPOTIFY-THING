@@ -186,6 +186,7 @@ def evaluate_sequence_metrics(
         "mean_energy_jump": round(float(np.mean(energy_jumps)), 4),
         "mean_bpm_jump": round(float(np.mean(bpm_jumps)), 2),
         "session_ndcg": round(early_rel, 4),
+        "predicted_relevance_ndcg": round(early_rel, 4),
         "discovery_pacing_std": round(disc_std, 4),
         "sequence_validity": is_valid_permutation,
     }
