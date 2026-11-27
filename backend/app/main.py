@@ -61,11 +61,15 @@ async def lifespan(app: FastAPI):
     global ENGINE
     device = "cuda" if torch.cuda.is_available() else "cpu"
     if (PROCESSED_DIR / "tracks.parquet").exists():
-        ENGINE = HybridRecommendationEngine(
-            processed_dir=PROCESSED_DIR,
-            artifacts_dir=ARTIFACTS_DIR,
-            device=device,
-        )
+        try:
+            ENGINE = HybridRecommendationEngine(
+                processed_dir=PROCESSED_DIR,
+                artifacts_dir=ARTIFACTS_DIR,
+                device=device,
+            )
+        except RuntimeError as exc:
+            ENGINE = None
+            print(f"[startup] Recommendation engine unavailable: {exc}")
     yield
 
 

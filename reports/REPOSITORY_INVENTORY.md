@@ -73,5 +73,5 @@ The unit test suite does not test dataset construction, split leakage, replay ne
 
 ## Verified Claim Discrepancies
 
-1. The README claims 2.06M matched Last.fm listening events. The checked-in report instead says 327,754 interactions.
+1. The README should distinguish 2,067,551 raw matched Last.fm events from 327,754 retained timestamp-derived interactions.
 2. The frontend loading text refers to a FAISS index, but runtime code implements an exact NumPy/BLAS inner-product search rather than loading or using FAISS.

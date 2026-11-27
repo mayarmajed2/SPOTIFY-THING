@@ -48,6 +48,7 @@ Next.js Studio
 
 - Restricted CORS origins with an environment override.
 - Added explicit missing-artifact startup validation.
+- API lifespan catches incomplete artifact state, leaves the engine unavailable, and keeps `/api/health` reachable as a clear 503 instead of crashing startup.
 - Corrected source and UI text that claimed FAISS.
 - Simplified the manual horizon override and added a focused test.
 - Relaxed brittle API test assumptions about exact catalog size and user count.
