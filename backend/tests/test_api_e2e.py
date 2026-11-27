@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import pytest
 from fastapi.testclient import TestClient
 
 from backend.app.main import app
 
 
+@pytest.mark.requires_dataset
 def test_full_api_lifecycle() -> None:
     with TestClient(app) as client:
         h = client.get("/api/health")

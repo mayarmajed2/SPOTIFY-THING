@@ -58,6 +58,23 @@ def test_adaptive_shuffle_reduces_artist_clumping_and_smooths_flow() -> None:
     assert np.mean(clumps_adapt) < np.mean(clumps_rand) * 0.35
     assert np.mean(smooth_adapt) > np.mean(smooth_rand)
 
+    # Verify original adaptive mode is preserved identically when quota_urgency_weight=0.0
+    orig_a = eng.sequence(embs, artist_ids, genre_ids, raw_audio, rel, is_disc, ShuffleConfig(mode="adaptive", seed=42))
+    orig_b = eng.sequence(
+        embs, artist_ids, genre_ids, raw_audio, rel, is_disc,
+        ShuffleConfig(mode="adaptive", quota_urgency_weight=0.0, seed=42),
+    )
+    assert orig_a["ordered_positions"] == orig_b["ordered_positions"]
+    assert orig_a["metrics"]["sequence_validity"] == 1.0
+
+    # Verify experimental quota urgency produces a valid permutation
+    exp_res = eng.sequence(
+        embs, artist_ids, genre_ids, raw_audio, rel, is_disc,
+        ShuffleConfig(mode="adaptive", quota_urgency_weight=0.75, seed=42),
+    )
+    assert sorted(exp_res["ordered_positions"]) == list(range(m))
+    assert exp_res["metrics"]["sequence_validity"] == 1.0
+
 
 def test_online_feedback_bandit_shifts_affinity_directionally() -> None:
     rng = np.random.default_rng(11)

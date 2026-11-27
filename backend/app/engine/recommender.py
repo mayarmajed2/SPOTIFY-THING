@@ -38,7 +38,8 @@ class ExactInnerProductIndex:
         return top_sims[row_idx, order], top_part[row_idx, order]
 
 from backend.app.engine.adaptive_shuffle import AdaptiveShuffleEngine, ShuffleConfig
-from backend.app.engine.online_feedback import UserFeedbackState
+from backend.app.engine.feedback_store import SQLiteFeedbackStore
+from backend.app.engine.online_feedback import FeedbackEvent, UserFeedbackState
 from backend.app.models.collaborative import ItemCooccurrenceCF, NeuralCollaborativeFiltering
 from backend.app.models.embeddings import MultimodalTrackEncoder
 from backend.app.models.sequential_transformer import (
@@ -50,10 +51,19 @@ from backend.app.models.sequential_transformer import (
 
 
 class HybridRecommendationEngine:
-    def __init__(self, processed_dir: Path, artifacts_dir: Path, device: str = "cpu") -> None:
+    def __init__(
+        self,
+        processed_dir: Path,
+        artifacts_dir: Path,
+        device: str = "cpu",
+        feedback_db_path: Path | None = None,
+    ) -> None:
         self.processed_dir = processed_dir
         self.artifacts_dir = artifacts_dir
         self.device = torch.device(device)
+        self.feedback_store = SQLiteFeedbackStore(
+            feedback_db_path if feedback_db_path is not None else (artifacts_dir / "feedback_state.db")
+        )
 
         # Load catalog & metadata
         self.tracks_df = pd.read_parquet(processed_dir / "tracks.parquet")
@@ -171,10 +181,32 @@ class HybridRecommendationEngine:
 
     def get_feedback_state(self, user_idx: int) -> UserFeedbackState:
         if user_idx not in self.feedback_states:
-            self.feedback_states[user_idx] = UserFeedbackState(user_idx=user_idx, embed_dim=128)
+            self.feedback_states[user_idx] = self.feedback_store.load_user_state(
+                user_idx=user_idx, embed_dim=128
+            )
         return self.feedback_states[user_idx]
 
+    def record_user_feedback(
+        self,
+        user_idx: int,
+        item_idx: int,
+        action: str,
+        played_ratio: float = 1.0,
+    ) -> tuple[FeedbackEvent, UserFeedbackState]:
+        fb_state = self.get_feedback_state(user_idx)
+        ev = fb_state.record_feedback(
+            item_idx=item_idx,
+            item_emb=self.item_embeddings[item_idx],
+            artist_idx=int(self.artist_ids[item_idx]),
+            genre_idx=int(self.genre_ids[item_idx]),
+            action=action,
+            played_ratio=played_ratio,
+        )
+        self.feedback_store.save_user_state(fb_state)
+        return ev, fb_state
+
     def reset_feedback_state(self, user_idx: int) -> None:
+        self.feedback_store.reset_user_state(user_idx)
         self.feedback_states[user_idx] = UserFeedbackState(user_idx=user_idx, embed_dim=128)
 
     @torch.no_grad()

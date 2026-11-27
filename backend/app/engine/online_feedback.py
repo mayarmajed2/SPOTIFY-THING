@@ -56,6 +56,7 @@ class UserFeedbackState:
     def __init__(self, user_idx: int, embed_dim: int = 128, ridge_lambda: float = 2.0) -> None:
         self.user_idx = user_idx
         self.embed_dim = embed_dim
+        self.ridge_lambda = float(ridge_lambda)
         self.A_diag = np.full(embed_dim, ridge_lambda, dtype=np.float32)
         self.b = np.zeros(embed_dim, dtype=np.float32)
         self.delta_u = np.zeros(embed_dim, dtype=np.float32)
@@ -178,3 +179,69 @@ class UserFeedbackState:
             "fatigued_artists": len(self.artist_fatigue),
             "fatigued_genres": len(self.genre_fatigue),
         }
+
+    def to_dict(self) -> dict[str, Any]:
+        """Serialize complete per-user bandit and feedback memory for persistence."""
+        return {
+            "user_idx": int(self.user_idx),
+            "embed_dim": int(self.embed_dim),
+            "ridge_lambda": float(self.ridge_lambda),
+            "A_diag": self.A_diag.astype(float).tolist(),
+            "b": self.b.astype(float).tolist(),
+            "delta_u": self.delta_u.astype(float).tolist(),
+            "liked_items": sorted(int(i) for i in self.liked_items),
+            "disliked_items": sorted(int(i) for i in self.disliked_items),
+            "skipped_items": sorted(int(i) for i in self.skipped_items),
+            "played_items_recent": [int(i) for i in self.played_items_recent[-100:]],
+            "artist_fatigue": {str(k): float(v) for k, v in self.artist_fatigue.items()},
+            "genre_fatigue": {str(k): float(v) for k, v in self.genre_fatigue.items()},
+            "artist_boost": {str(k): float(v) for k, v in self.artist_boost.items()},
+            "genre_boost": {str(k): float(v) for k, v in self.genre_boost.items()},
+            "events": [
+                {
+                    "item_idx": int(ev.item_idx),
+                    "action": ev.action,
+                    "action_id": int(ev.action_id),
+                    "played_ratio": float(ev.played_ratio),
+                    "reward": float(ev.reward),
+                    "artist_idx": int(ev.artist_idx),
+                    "genre_idx": int(ev.genre_idx),
+                    "timestamp": float(ev.timestamp),
+                }
+                for ev in self.events[-200:]
+            ],
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "UserFeedbackState":
+        """Restore a persisted UserFeedbackState from a serialized dictionary."""
+        state = cls(
+            user_idx=int(data["user_idx"]),
+            embed_dim=int(data.get("embed_dim", 128)),
+            ridge_lambda=float(data.get("ridge_lambda", 2.0)),
+        )
+        state.A_diag = np.asarray(data["A_diag"], dtype=np.float32)
+        state.b = np.asarray(data["b"], dtype=np.float32)
+        state.delta_u = np.asarray(data["delta_u"], dtype=np.float32)
+        state.liked_items = {int(i) for i in data.get("liked_items", [])}
+        state.disliked_items = {int(i) for i in data.get("disliked_items", [])}
+        state.skipped_items = {int(i) for i in data.get("skipped_items", [])}
+        state.played_items_recent = [int(i) for i in data.get("played_items_recent", [])]
+        state.artist_fatigue = {int(k): float(v) for k, v in data.get("artist_fatigue", {}).items()}
+        state.genre_fatigue = {int(k): float(v) for k, v in data.get("genre_fatigue", {}).items()}
+        state.artist_boost = {int(k): float(v) for k, v in data.get("artist_boost", {}).items()}
+        state.genre_boost = {int(k): float(v) for k, v in data.get("genre_boost", {}).items()}
+        state.events = [
+            FeedbackEvent(
+                item_idx=int(ev["item_idx"]),
+                action=str(ev["action"]),
+                action_id=int(ev["action_id"]),
+                played_ratio=float(ev["played_ratio"]),
+                reward=float(ev["reward"]),
+                artist_idx=int(ev["artist_idx"]),
+                genre_idx=int(ev["genre_idx"]),
+                timestamp=float(ev["timestamp"]),
+            )
+            for ev in data.get("events", [])
+        ]
+        return state

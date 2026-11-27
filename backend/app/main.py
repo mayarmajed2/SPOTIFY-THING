@@ -51,11 +51,14 @@ def get_engine() -> HybridRecommendationEngine:
 async def lifespan(app: FastAPI):
     global ENGINE
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    feedback_db_env = os.getenv("RESONANCE_FEEDBACK_DB")
+    feedback_db = Path(feedback_db_env) if feedback_db_env else (ARTIFACTS_DIR / "feedback_state.db")
     if (PROCESSED_DIR / "tracks.parquet").exists():
         ENGINE = HybridRecommendationEngine(
             processed_dir=PROCESSED_DIR,
             artifacts_dir=ARTIFACTS_DIR,
             device=device,
+            feedback_db_path=feedback_db,
         )
     yield
 
@@ -66,12 +69,21 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+def _parse_cors_origins() -> list[str]:
+    """Parse allowed CORS origins from RESONANCE_CORS_ORIGINS with safe localhost defaults."""
+    raw = os.getenv("RESONANCE_CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+    origins = [o.strip().rstrip("/") for o in raw.split(",") if o.strip()]
+    return origins or ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+
+CORS_ORIGINS = _parse_cors_origins()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 
@@ -327,12 +339,9 @@ def record_live_feedback(req: FeedbackRequest) -> dict[str, Any]:
     if not (0 <= req.item_idx < eng.num_items):
         raise HTTPException(status_code=404, detail=f"Track {req.item_idx} not found.")
 
-    fb_state = eng.get_feedback_state(req.user_idx)
-    ev = fb_state.record_feedback(
+    ev, fb_state = eng.record_user_feedback(
+        user_idx=req.user_idx,
         item_idx=req.item_idx,
-        item_emb=eng.item_embeddings[req.item_idx],
-        artist_idx=int(eng.artist_ids[req.item_idx]),
-        genre_idx=int(eng.genre_ids[req.item_idx]),
         action=req.action,
         played_ratio=req.played_ratio,
     )

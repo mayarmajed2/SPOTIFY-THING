@@ -73,7 +73,8 @@ backend\.venv\Scripts\python.exe -m backend.training.train_and_evaluate
 
 ### 4. Launch Backend API & Next.js Studio UI
 ```powershell
-# Or simply run .\start_dev.ps1
+# Windows: .\start_dev.ps1   |   macOS / Linux: ./start_dev.sh
+# Or run manually in two terminals:
 # Terminal 1 — FastAPI Engine (http://127.0.0.1:8000)
 $env:PYTHONPATH = "."
 backend\.venv\Scripts\uvicorn.exe backend.app.main:app --host 127.0.0.1 --port 8000
@@ -83,3 +84,13 @@ cd frontend
 npm.cmd install
 npm.cmd run dev
 ```
+
+---
+
+## Engineering Notes, Configuration & Persistence
+
+- **CORS Configuration:** Allowed origins are controlled via `RESONANCE_CORS_ORIGINS` (comma-separated). Defaults safely to `http://localhost:3000,http://127.0.0.1:3000` with explicit `GET, POST, OPTIONS` methods and `Content-Type, Authorization` headers.
+- **Feedback State Persistence:** Per-user LinUCB bandit vectors, fatigue counters, and feedback events are persisted in SQLite (`WAL` mode + `IMMEDIATE` transactions) at `RESONANCE_FEEDBACK_DB` (default `data/artifacts/feedback_state.db`), surviving backend restarts with strict per-user isolation. For multi-instance cloud deployments, swap `SQLiteFeedbackStore` for a shared Redis hash store (optimistic locking / Lua script) or PostgreSQL `JSONB` with `SELECT ... FOR UPDATE`.
+- **Experimental Adaptive Shuffle Option:** The original Adaptive Shuffle (`quota_urgency_weight=0.0`) is preserved as the default. An opt-in remaining-quota urgency term (`quota_urgency_weight=0.40–0.75`) reduces artist clump rate by 26–32% across 200 playlists (5 seeds) with a small NDCG/smoothness tradeoff on artist-heavy playlists; see [docs/shuffle_experiment_report.md](docs/shuffle_experiment_report.md) for full mean ± std tables.
+- **Testing & CI:** GitHub Actions (`.github/workflows/ci.yml`) runs unit and persistence tests (`pytest backend/tests -m "not requires_dataset" -v`) plus the Next.js production build. `backend/tests/test_api_e2e.py` is explicitly marked `@pytest.mark.requires_dataset` and deselected in CI because it validates against the locally generated 40k-track Parquet catalog and trained checkpoints; run `pytest backend/tests -v` locally after building the dataset.
+- **License Scope:** Original source code and documentation are released under the [MIT License](LICENSE). External datasets downloaded at runtime (`maharshipandya/spotify-tracks-dataset`, `Spotify Million Playlist Dataset`, `Last.fm 1K`) and Spotify Embed widgets are not covered by the repository license and remain subject to their respective upstream terms.

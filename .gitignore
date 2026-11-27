@@ -12,6 +12,9 @@ data/artifacts/*.npy
 data/artifacts/*.pkl
 data/artifacts/*.faiss
 data/artifacts/*.parquet
+data/artifacts/*.db
+data/artifacts/*.db-wal
+data/artifacts/*.db-shm
 
 # Node / Next.js
 frontend/node_modules/
