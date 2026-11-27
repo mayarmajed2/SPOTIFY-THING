@@ -19,6 +19,7 @@ from typing import Any
 
 import numpy as np
 
+# Maps rich feedback actions onto the 0..5 action vocabulary expected by DualHorizonSessionTransformer
 ACTION_TO_ID = {
     "early_skip": 0,
     "partial_play": 1,
@@ -26,6 +27,11 @@ ACTION_TO_ID = {
     "repeat": 3,
     "like": 4,
     "dislike": 5,
+    "not_interested": 5,
+    "more_like_this": 4,
+    "less_like_this": 0,
+    "artist_fatigue": 0,
+    "genre_fatigue": 0,
 }
 
 ACTION_DEFAULT_REWARD = {
@@ -35,6 +41,11 @@ ACTION_DEFAULT_REWARD = {
     "repeat": 0.85,
     "like": 1.00,
     "dislike": -1.00,
+    "not_interested": -0.45,
+    "more_like_this": 0.90,
+    "less_like_this": -0.55,
+    "artist_fatigue": -0.30,
+    "genre_fatigue": -0.30,
 }
 
 
@@ -116,10 +127,16 @@ class UserFeedbackState:
         self.A_diag += x * x
         self.b += reward * x
 
-        # Calibrated EMA residual shift: gentler on a single early_skip to avoid overreaction
-        if action == "early_skip":
+        # Calibrated EMA residual shift: gentler on single negative actions so one negative click never shocks long-term taste
+        if action in ("artist_fatigue", "genre_fatigue"):
+            step_lr = 0.05
+        elif action in ("not_interested", "less_like_this"):
+            step_lr = 0.10
+        elif action == "early_skip":
             prev_skips = self.genre_skip_counts.get(genre_idx, 0)
             step_lr = 0.10 if prev_skips == 0 else 0.22
+        elif action == "dislike":
+            step_lr = 0.18
         elif abs(reward) >= 0.7:
             step_lr = 0.26
         else:
@@ -135,6 +152,11 @@ class UserFeedbackState:
             self.genre_skip_counts.pop(genre_idx, None)
             self.artist_boost[artist_idx] = min(1.5, self.artist_boost.get(artist_idx, 0.0) + 0.45)
             self.genre_boost[genre_idx] = min(1.2, self.genre_boost.get(genre_idx, 0.0) + 0.30)
+        elif action == "more_like_this":
+            self.disliked_items.discard(item_idx)
+            self.genre_skip_counts.pop(genre_idx, None)
+            self.artist_boost[artist_idx] = min(1.5, self.artist_boost.get(artist_idx, 0.0) + 0.40)
+            self.genre_boost[genre_idx] = min(1.2, self.genre_boost.get(genre_idx, 0.0) + 0.35)
         elif action == "repeat":
             self.genre_skip_counts.pop(genre_idx, None)
             self.artist_boost[artist_idx] = min(1.5, self.artist_boost.get(artist_idx, 0.0) + 0.35)
@@ -143,7 +165,23 @@ class UserFeedbackState:
             self.disliked_items.add(item_idx)
             self.liked_items.discard(item_idx)
             self.artist_fatigue[artist_idx] = self.artist_fatigue.get(artist_idx, 0.0) + 0.90
-            self.genre_fatigue[genre_idx] = self.genre_fatigue.get(genre_idx, 0.0) + 0.50
+            self.genre_fatigue[genre_idx] = self.genre_fatigue.get(genre_idx, 0.0) + 0.40
+        elif action == "not_interested":
+            self.disliked_items.add(item_idx)
+            self.liked_items.discard(item_idx)
+            self.artist_fatigue[artist_idx] = self.artist_fatigue.get(artist_idx, 0.0) + 0.25
+        elif action == "less_like_this":
+            self.disliked_items.add(item_idx)
+            self.liked_items.discard(item_idx)
+            self.artist_fatigue[artist_idx] = self.artist_fatigue.get(artist_idx, 0.0) + 0.45
+            skip_cnt = self.genre_skip_counts.get(genre_idx, 0) + 1
+            self.genre_skip_counts[genre_idx] = skip_cnt
+            if skip_cnt >= 2:
+                self.genre_fatigue[genre_idx] = self.genre_fatigue.get(genre_idx, 0.0) + 0.30
+        elif action == "artist_fatigue":
+            self.artist_fatigue[artist_idx] = min(2.0, self.artist_fatigue.get(artist_idx, 0.0) + 0.85)
+        elif action == "genre_fatigue":
+            self.genre_fatigue[genre_idx] = min(2.0, self.genre_fatigue.get(genre_idx, 0.0) + 0.75)
         elif action == "early_skip":
             self.skipped_items.add(item_idx)
             self.artist_fatigue[artist_idx] = self.artist_fatigue.get(artist_idx, 0.0) + 0.45
