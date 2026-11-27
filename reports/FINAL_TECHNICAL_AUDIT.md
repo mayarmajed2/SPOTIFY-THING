@@ -22,13 +22,15 @@ The repository is a compact, source-complete demo of a music recommendation and 
 - Added `torch` to `backend/pyproject.toml`.
 - Restricted API CORS origins and added `ALLOWED_ORIGINS`.
 - Added explicit serving-artifact validation.
+- API startup now remains reachable and reports 503 when generated model artifacts are incomplete.
 - Corrected exact inner-product retrieval terminology.
 - Corrected and tested the manual horizon override.
 - Removed exact 40k/500-user assumptions from the API E2E test.
 
 ## Verification
 
-- Backend engine/shuffle tests: **3 passed**.
+- Backend suite: **4 passed, 1 skipped**.
+- The skipped test is the artifact-dependent full API lifecycle test.
 - Next.js production build: **passed**.
 - Python source compilation: not used as a separate gate; focused pytest and source execution exercised the relevant backend modules.
 - Data construction completed with the default public-data settings. Full CPU-only training was stopped after about 70 minutes without complete NeuMF/Transformer checkpoints, so the benchmark suite was not rerun and no replacement methodology was used.

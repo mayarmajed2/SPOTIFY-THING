@@ -3,11 +3,43 @@
 from __future__ import annotations
 
 from fastapi.testclient import TestClient
+import pytest
 
 from backend.app.main import app
+from backend.app.main import ARTIFACTS_DIR
+
+
+def test_api_reports_missing_artifacts_as_service_unavailable() -> None:
+    required_artifacts = (
+        "neumf_checkpoint.pt",
+        "transformer_checkpoint.pt",
+        "track_embeddings.npy",
+        "item_cf.pkl",
+    )
+    if all((ARTIFACTS_DIR / name).exists() for name in required_artifacts):
+        pytest.skip("Required model artifacts are present; this check is for incomplete deployments.")
+
+    with TestClient(app) as client:
+        response = client.get("/api/health")
+        assert response.status_code == 503
+        assert "not initialized" in response.json()["detail"]
 
 
 def test_full_api_lifecycle() -> None:
+    required_artifacts = (
+        "neumf_checkpoint.pt",
+        "transformer_checkpoint.pt",
+        "track_embeddings.npy",
+        "item_cf.pkl",
+    )
+    missing = [name for name in required_artifacts if not (ARTIFACTS_DIR / name).exists()]
+    if missing:
+        pytest.skip(
+            "Generated model artifacts are absent: "
+            + ", ".join(missing)
+            + ". Build and train the project before running the API lifecycle test."
+        )
+
     with TestClient(app) as client:
         h = client.get("/api/health")
         assert h.status_code == 200
