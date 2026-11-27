@@ -18,14 +18,17 @@ data/artifacts/*.db
 data/artifacts/*.db-wal
 data/artifacts/*.db-shm
 
-# Node / Next.js
+# Node / Next.js / Chrome Extension
 frontend/node_modules/
 frontend/.next/
 frontend/out/
+extension/node_modules/
+extension/dist/
 *.tsbuildinfo
 
-# OS / IDE
+# OS / IDE / Secrets
 .DS_Store
 Thumbs.db
 .env
-.env.local
+.env.*
+!.env.example

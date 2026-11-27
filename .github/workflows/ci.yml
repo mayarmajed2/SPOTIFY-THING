@@ -1,14 +1,14 @@
-name: CI — Backend Tests & Frontend Build
+name: CI — Backend Tests, Extension Tests & Production Builds
 
 on:
   push:
-    branches: [main, "feat/**", "research/**"]
+    branches: [main, "feat/**", "feature/**", "research/**"]
   pull_request:
     branches: [main]
 
 jobs:
   backend-unit-tests:
-    name: Backend Unit & Persistence Tests
+    name: Backend Unit, Persistence & Companion API v1 Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -26,17 +26,51 @@ jobs:
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install -e ./backend
 
-      - name: Run unit and persistence tests (excluding dataset-dependent E2E)
+      - name: Run unit, persistence, and /api/v1/* companion tests
         # Note: backend/tests/test_api_e2e.py is marked @pytest.mark.requires_dataset
         # because it tests against locally generated 40k-track Parquet tables and
-        # trained checkpoints (~800 MB) not committed to Git. It is intentionally
-        # deselected in CI via `-m "not requires_dataset"` rather than skipped silently.
+        # trained checkpoints (~800 MB) not committed to Git. All /api/v1/* companion
+        # tests in test_v1_companion_api.py build a self-contained synthetic PyTorch
+        # fixture and run unconditionally in CI.
         env:
           PYTHONPATH: "."
         run: pytest backend/tests -m "not requires_dataset" -v
 
+  extension-build-and-tests:
+    name: Chrome Companion Extension Tests & MV3 Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: extension/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Extension Manifest, PKCE, SpotifyProvider & UI tests
+        run: npm test
+
+      - name: Build production Manifest V3 bundle
+        run: npm run build
+
+      - name: Verify built Chrome Extension package artifacts
+        run: |
+          test -f dist/manifest.json
+          test -f dist/popup.html
+          test -f dist/service-worker.js
+          test -f dist/icons/icon-128.png
+
   frontend-build:
-    name: Frontend TypeScript & Next.js Production Build
+    name: Web Studio TypeScript & Next.js Production Build
     runs-on: ubuntu-latest
     defaults:
       run:
