@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from fastapi.testclient import TestClient
 import pytest
+from fastapi.testclient import TestClient
 
 from backend.app.main import app
 from backend.app.main import ARTIFACTS_DIR
@@ -25,6 +25,7 @@ def test_api_reports_missing_artifacts_as_service_unavailable() -> None:
         assert "not initialized" in response.json()["detail"]
 
 
+@pytest.mark.requires_dataset
 def test_full_api_lifecycle() -> None:
     required_artifacts = (
         "neumf_checkpoint.pt",

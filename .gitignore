@@ -7,11 +7,16 @@ __pycache__/
 # Data & Model Checkpoints (keep reports/configs tracked)
 data/raw/
 data/processed/
+data/processed_v2/
+data/artifacts_v2/
 data/artifacts/*.pt
 data/artifacts/*.npy
 data/artifacts/*.pkl
 data/artifacts/*.faiss
 data/artifacts/*.parquet
+data/artifacts/*.db
+data/artifacts/*.db-wal
+data/artifacts/*.db-shm
 
 # Node / Next.js
 frontend/node_modules/

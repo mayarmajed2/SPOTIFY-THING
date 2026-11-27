@@ -28,7 +28,7 @@ CIRCLE_OF_FIFTHS_POS = np.array([0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5], dtype=np
 
 @dataclass
 class ShuffleConfig:
-    mode: str = "adaptive"  # adaptive | fisher_yates | artist_spaced | greedy_relevance
+    mode: str = "adaptive"  # adaptive | adaptive_quota_urgency | fisher_yates | artist_spaced | greedy_relevance
     diversity_weight: float = 0.65
     flow_weight: float = 0.45
     relevance_weight: float = 0.55
@@ -36,6 +36,7 @@ class ShuffleConfig:
     genre_cooldown: int = 2
     entropy_temperature: float = 0.18  # Controls unpredictability (0.05 = focused, 0.60 = wild)
     discovery_target: float = 0.35
+    quota_urgency_weight: float = 0.0  # Experimental: 0.0 preserves original Adaptive Shuffle exactly
     seed: int | None = None
 
 
@@ -130,12 +131,20 @@ def evaluate_sequence_metrics(
         last_seen[a_int] = pos_idx
 
     min_artist_gap = float(min(gaps)) if gaps else float(n)
+    p25_artist_gap = float(np.percentile(gaps, 25)) if gaps else float(n)
+    median_artist_gap = float(np.median(gaps)) if gaps else float(n)
     mean_artist_gap = float(np.mean(gaps)) if gaps else float(n)
+    max_artist_gap = float(max(gaps)) if gaps else float(n)
     artist_clump_rate = float(clumps / max(1, n - 1))
 
-    # 3. Genre switch rate (consecutive tracks from different genres)
+    # 3. Genre switch rate & rolling window genre diversity
     genre_switches = int(np.sum(seq_gen[1:] != seq_gen[:-1]))
     genre_switch_rate = float(genre_switches / (n - 1))
+    win_genre_ratios = []
+    for k in range(n):
+        w_slice = seq_gen[max(0, k - window + 1) : k + 1]
+        win_genre_ratios.append(len(np.unique(w_slice)) / len(w_slice))
+    window_genre_diversity = float(np.mean(win_genre_ratios))
 
     # 4. Acoustic transition smoothness & jumps
     flows = []
@@ -160,18 +169,26 @@ def evaluate_sequence_metrics(
     else:
         disc_std = 0.0
 
+    is_valid_permutation = float(len(ordered_pos) == len(embeddings) and len(set(ordered_pos)) == len(embeddings))
+
     return {
         "intra_list_diversity": round(ild, 4),
         "local_window_diversity": round(local_ild, 4),
         "min_artist_gap": round(min_artist_gap, 2),
+        "p25_artist_gap": round(p25_artist_gap, 2),
+        "median_artist_gap": round(median_artist_gap, 2),
         "mean_artist_gap": round(mean_artist_gap, 2),
+        "max_artist_gap": round(max_artist_gap, 2),
         "artist_clump_rate": round(artist_clump_rate, 4),
         "genre_switch_rate": round(genre_switch_rate, 4),
+        "window_genre_diversity": round(window_genre_diversity, 4),
         "acoustic_smoothness": round(float(np.mean(flows)), 4),
         "mean_energy_jump": round(float(np.mean(energy_jumps)), 4),
         "mean_bpm_jump": round(float(np.mean(bpm_jumps)), 2),
         "session_ndcg": round(early_rel, 4),
+        "predicted_relevance_ndcg": round(early_rel, 4),
         "discovery_pacing_std": round(disc_std, 4),
+        "sequence_validity": is_valid_permutation,
     }
 
 
@@ -300,9 +317,23 @@ class AdaptiveShuffleEngine:
         sim_matrix = np.clip(embeddings @ embeddings.T, -1.0, 1.0)
         disc_count_so_far = 0
 
+        # Experimental remaining-quota urgency weight (0.0 preserves original algorithm identically)
+        effective_urgency = (
+            config.quota_urgency_weight
+            if config.quota_urgency_weight > 0.0
+            else (0.75 if config.mode.lower().strip() == "adaptive_quota_urgency" else 0.0)
+        )
+        artist_rem_counts: dict[int, int] = {}
+        if effective_urgency > 0.0:
+            for a in artist_ids:
+                ai = int(a)
+                artist_rem_counts[ai] = artist_rem_counts.get(ai, 0) + 1
+        urgency_gap_target = min(max(config.artist_cooldown, 1), 3)
+
         for step in range(m):
             cand_indices = np.flatnonzero(remaining)
-            if len(cand_indices) == 1:
+            rem_slots = len(cand_indices)
+            if rem_slots == 1:
                 chosen = int(cand_indices[0])
                 order.append(chosen)
                 details.append(
@@ -319,12 +350,25 @@ class AdaptiveShuffleEngine:
 
             rel_term = norm_rel[cand_indices] - static_fatigue[cand_indices]
 
+            # Compute optional remaining-quota urgency for artists with >1 remaining tracks
+            urgency_term = np.zeros(rem_slots, dtype=np.float32)
+            if effective_urgency > 0.0:
+                slot_budget = max(1.0, rem_slots / float(urgency_gap_target + 1))
+                cand_rem = np.array([artist_rem_counts[int(artist_ids[i])] for i in cand_indices], dtype=np.float32)
+                urgency_term = np.clip((cand_rem - 1.0) / slot_budget, 0.0, 1.5)
+
             if step == 0:
                 # Anchor start of session on an engaging, familiar or high-relevance track
-                start_scores = config.relevance_weight * rel_term + 0.25 * (~is_discovery[cand_indices]).astype(np.float32)
+                start_scores = (
+                    config.relevance_weight * rel_term
+                    + 0.25 * (~is_discovery[cand_indices]).astype(np.float32)
+                    + (0.5 * effective_urgency * urgency_term if effective_urgency > 0.0 else 0.0)
+                )
                 chosen_local = self._boltzmann_sample(start_scores, max(config.entropy_temperature, 0.12), rng)
                 chosen = int(cand_indices[chosen_local])
                 remaining[chosen] = False
+                if effective_urgency > 0.0:
+                    artist_rem_counts[int(artist_ids[chosen])] -= 1
                 order.append(chosen)
                 if is_discovery[chosen]:
                     disc_count_so_far += 1
@@ -390,6 +434,7 @@ class AdaptiveShuffleEngine:
                 + config.flow_weight * flow_term
                 + config.diversity_weight * div_term
                 + pacing_bonus
+                + (effective_urgency * urgency_term if effective_urgency > 0.0 else 0.0)
                 - config.diversity_weight * rep_penalty
             )
             if not hard_artist_block.all():
@@ -398,6 +443,8 @@ class AdaptiveShuffleEngine:
             chosen_local = self._boltzmann_sample(total_utility, config.entropy_temperature, rng)
             chosen = int(cand_indices[chosen_local])
             remaining[chosen] = False
+            if effective_urgency > 0.0:
+                artist_rem_counts[int(artist_ids[chosen])] -= 1
             order.append(chosen)
             if is_discovery[chosen]:
                 disc_count_so_far += 1

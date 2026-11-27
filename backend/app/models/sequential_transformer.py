@@ -66,6 +66,7 @@ class DualHorizonSessionTransformer(nn.Module):
             batch_first=True,
             norm_first=True,
         )
+        self.num_heads = num_heads
         self.transformer = nn.TransformerEncoder(
             encoder_layer,
             num_layers=num_layers,
@@ -112,15 +113,17 @@ class DualHorizonSessionTransformer(nn.Module):
         x = self.input_drop(self.input_norm(track_vecs + act_vecs + time_vecs + pos_vecs))
 
         causal_mask = torch.triu(torch.ones((L, L), dtype=torch.bool, device=device), diagonal=1)
-        pad_mask = item_seq == self.pad_item_id
+        pad_mask = item_seq == self.pad_item_id  # [B, L]
 
-        # Prevent NaN if an entire row were padding
-        all_pad = pad_mask.all(dim=1)
-        if all_pad.any():
-            pad_mask = pad_mask.clone()
-            pad_mask[all_pad, -1] = False
+        # Combine causal mask and key padding mask safely so left-padded queries
+        # attend only to themselves (preventing softmax(all -inf) = NaN) while valid
+        # queries never attend to future tokens OR padding keys.
+        attn_mask = causal_mask.unsqueeze(0) | pad_mask.unsqueeze(1)  # [B, L, L]
+        diag_idx = torch.arange(L, device=device)
+        attn_mask[:, diag_idx, diag_idx] = False
+        attn_mask_heads = attn_mask.unsqueeze(1).expand(B, self.num_heads, L, L).reshape(B * self.num_heads, L, L)
 
-        h = self.transformer(x, mask=causal_mask, src_key_padding_mask=pad_mask)
+        h = self.transformer(x, mask=attn_mask_heads)
         u_short = F.normalize(self.short_proj(h), p=2, dim=-1)
         return u_short
 

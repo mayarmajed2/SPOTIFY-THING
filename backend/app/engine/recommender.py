@@ -21,6 +21,27 @@ import pandas as pd
 import torch
 
 
+def reciprocal_rank_score(scores: np.ndarray, k_rrf: int = 60, positive_only: bool = False) -> np.ndarray:
+    """
+    Convert arbitrary score vector into bounded, outlier-proof Reciprocal Rank scores in [0, 1].
+    Prevents sparse CF spikes from hijacking full-catalog rankings when fused with dense embeddings.
+    """
+    n = len(scores)
+    out = np.zeros(n, dtype=np.float32)
+    if n == 0:
+        return out
+    if positive_only:
+        valid = np.flatnonzero(scores > 0.0)
+        if len(valid) == 0:
+            return out
+        order = valid[np.argsort(-scores[valid])]
+    else:
+        order = np.argsort(-scores)
+    ranks = np.arange(1, len(order) + 1, dtype=np.float32)
+    out[order] = (k_rrf + 1.0) / (k_rrf + ranks)
+    return out
+
+
 class ExactInnerProductIndex:
     """SIMD/BLAS-accelerated exact Inner Product vector index (drop-in for IndexFlatIP)."""
 
@@ -38,7 +59,8 @@ class ExactInnerProductIndex:
         return top_sims[row_idx, order], top_part[row_idx, order]
 
 from backend.app.engine.adaptive_shuffle import AdaptiveShuffleEngine, ShuffleConfig
-from backend.app.engine.online_feedback import UserFeedbackState
+from backend.app.engine.feedback_store import SQLiteFeedbackStore
+from backend.app.engine.online_feedback import FeedbackEvent, UserFeedbackState
 from backend.app.models.collaborative import ItemCooccurrenceCF, NeuralCollaborativeFiltering
 from backend.app.models.embeddings import MultimodalTrackEncoder
 from backend.app.models.sequential_transformer import (
@@ -50,10 +72,19 @@ from backend.app.models.sequential_transformer import (
 
 
 class HybridRecommendationEngine:
-    def __init__(self, processed_dir: Path, artifacts_dir: Path, device: str = "cpu") -> None:
+    def __init__(
+        self,
+        processed_dir: Path,
+        artifacts_dir: Path,
+        device: str = "cpu",
+        feedback_db_path: Path | None = None,
+    ) -> None:
         self.processed_dir = processed_dir
         self.artifacts_dir = artifacts_dir
         self.device = torch.device(device)
+        self.feedback_store = SQLiteFeedbackStore(
+            feedback_db_path if feedback_db_path is not None else (artifacts_dir / "feedback_state.db")
+        )
 
         # Load catalog & metadata
         self.tracks_df = pd.read_parquet(processed_dir / "tracks.parquet")
@@ -185,10 +216,32 @@ class HybridRecommendationEngine:
 
     def get_feedback_state(self, user_idx: int) -> UserFeedbackState:
         if user_idx not in self.feedback_states:
-            self.feedback_states[user_idx] = UserFeedbackState(user_idx=user_idx, embed_dim=128)
+            self.feedback_states[user_idx] = self.feedback_store.load_user_state(
+                user_idx=user_idx, embed_dim=128
+            )
         return self.feedback_states[user_idx]
 
+    def record_user_feedback(
+        self,
+        user_idx: int,
+        item_idx: int,
+        action: str,
+        played_ratio: float = 1.0,
+    ) -> tuple[FeedbackEvent, UserFeedbackState]:
+        fb_state = self.get_feedback_state(user_idx)
+        ev = fb_state.record_feedback(
+            item_idx=item_idx,
+            item_emb=self.item_embeddings[item_idx],
+            artist_idx=int(self.artist_ids[item_idx]),
+            genre_idx=int(self.genre_ids[item_idx]),
+            action=action,
+            played_ratio=played_ratio,
+        )
+        self.feedback_store.save_user_state(fb_state)
+        return ev, fb_state
+
     def reset_feedback_state(self, user_idx: int) -> None:
+        self.feedback_store.reset_user_state(user_idx)
         self.feedback_states[user_idx] = UserFeedbackState(user_idx=user_idx, embed_dim=128)
 
     @torch.no_grad()
@@ -285,7 +338,8 @@ class HybridRecommendationEngine:
             it for it, act in zip(rep["recent_items"], rep["recent_actions"]) if act in (0, 5)
         ] + list(fb_state.disliked_items)
         cf_raw = self.item_cf.score_for_history(pos_seed, neg_seed)
-        cf_norm = cf_raw / (float(cf_raw.max()) + 1e-6)
+        cf_rrf = reciprocal_rank_score(cf_raw, k_rrf=60, positive_only=True)
+        cos_rrf = reciprocal_rank_score(cos_scores, k_rrf=60, positive_only=False)
 
         # 3. Contextual Bandit Exploration + Exploitation Bonus
         bandit_scores = fb_state.linucb_bonus(
@@ -303,13 +357,15 @@ class HybridRecommendationEngine:
         for g_idx, bst in fb_state.genre_boost.items():
             dyn_adj[self.genre_ids == g_idx] += 0.12 * bst
 
+        # Scale-calibrated Reciprocal Rank Fusion (RRF) between Dual-Horizon Transformer and sparse CF
         base_relevance = (
             0.55 * cos_scores
-            + 0.25 * cf_norm
+            + 0.22 * (0.78 * cos_rrf + 0.22 * cf_rrf)
             + 0.20 * bandit_scores
             + novelty_boost * 0.22 * self.item_novelty
             + dyn_adj
         )
+        cf_norm = cf_rrf
 
         for b_it in blocked_items:
             if 0 <= b_it < self.num_items:

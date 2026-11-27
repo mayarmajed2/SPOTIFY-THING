@@ -1,0 +1,1693 @@
+{
+  "protocol_1_playlist_only_heldout": {
+    "num_test_playlists": 200,
+    "seeds": [
+      1000,
+      2000,
+      3000,
+      4000,
+      5000
+    ],
+    "regimes": {
+      "all": {
+        "Fisher-Yates Random": {
+          "artist_clump_rate": {
+            "mean": 0.1179,
+            "std": 0.002
+          },
+          "min_artist_gap": {
+            "mean": 2.04,
+            "std": 0.0625
+          },
+          "median_artist_gap": {
+            "mean": 6.981,
+            "std": 0.0843
+          },
+          "genre_switch_rate": {
+            "mean": 0.738,
+            "std": 0.0027
+          },
+          "window_genre_diversity": {
+            "mean": 0.7031,
+            "std": 0.0015
+          },
+          "local_window_diversity": {
+            "mean": 0.3661,
+            "std": 0.0005
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7144,
+            "std": 0.0016
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6731,
+            "std": 0.002
+          },
+          "mean_bpm_jump": {
+            "mean": 20.7463,
+            "std": 0.1045
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "order_variation_across_seeds": {
+            "mean": 0.9006,
+            "std": 0.0773
+          }
+        },
+        "Artist-Spacing Heuristic": {
+          "artist_clump_rate": {
+            "mean": 0.0451,
+            "std": 0.0011
+          },
+          "min_artist_gap": {
+            "mean": 5.935,
+            "std": 0.0773
+          },
+          "median_artist_gap": {
+            "mean": 10.574,
+            "std": 0.1001
+          },
+          "genre_switch_rate": {
+            "mean": 0.7671,
+            "std": 0.0026
+          },
+          "window_genre_diversity": {
+            "mean": 0.727,
+            "std": 0.0012
+          },
+          "local_window_diversity": {
+            "mean": 0.3709,
+            "std": 0.0013
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7036,
+            "std": 0.0007
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6692,
+            "std": 0.0063
+          },
+          "mean_bpm_jump": {
+            "mean": 21.4362,
+            "std": 0.1179
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "order_variation_across_seeds": {
+            "mean": 0.8939,
+            "std": 0.085
+          }
+        },
+        "Original Adaptive (w=0.00)": {
+          "artist_clump_rate": {
+            "mean": 0.0707,
+            "std": 0.0017
+          },
+          "min_artist_gap": {
+            "mean": 3.695,
+            "std": 0.112
+          },
+          "median_artist_gap": {
+            "mean": 8.334,
+            "std": 0.0852
+          },
+          "genre_switch_rate": {
+            "mean": 0.8061,
+            "std": 0.001
+          },
+          "window_genre_diversity": {
+            "mean": 0.7681,
+            "std": 0.0007
+          },
+          "local_window_diversity": {
+            "mean": 0.3683,
+            "std": 0.0005
+          },
+          "acoustic_smoothness": {
+            "mean": 0.726,
+            "std": 0.0007
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6922,
+            "std": 0.0039
+          },
+          "mean_bpm_jump": {
+            "mean": 19.9351,
+            "std": 0.1599
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "order_variation_across_seeds": {
+            "mean": 0.7707,
+            "std": 0.1197
+          }
+        },
+        "Adaptive + Urgency (w=0.40)": {
+          "artist_clump_rate": {
+            "mean": 0.05,
+            "std": 0.0005
+          },
+          "min_artist_gap": {
+            "mean": 5.072,
+            "std": 0.063
+          },
+          "median_artist_gap": {
+            "mean": 9.233,
+            "std": 0.0703
+          },
+          "genre_switch_rate": {
+            "mean": 0.8156,
+            "std": 0.0022
+          },
+          "window_genre_diversity": {
+            "mean": 0.7723,
+            "std": 0.002
+          },
+          "local_window_diversity": {
+            "mean": 0.3695,
+            "std": 0.0004
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7213,
+            "std": 0.0009
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.69,
+            "std": 0.0069
+          },
+          "mean_bpm_jump": {
+            "mean": 20.3973,
+            "std": 0.148
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "order_variation_across_seeds": {
+            "mean": 0.8016,
+            "std": 0.1203
+          }
+        },
+        "Adaptive + Urgency (w=0.75)": {
+          "artist_clump_rate": {
+            "mean": 0.0455,
+            "std": 0.0005
+          },
+          "min_artist_gap": {
+            "mean": 5.455,
+            "std": 0.0593
+          },
+          "median_artist_gap": {
+            "mean": 9.3945,
+            "std": 0.0951
+          },
+          "genre_switch_rate": {
+            "mean": 0.8189,
+            "std": 0.0012
+          },
+          "window_genre_diversity": {
+            "mean": 0.7736,
+            "std": 0.0013
+          },
+          "local_window_diversity": {
+            "mean": 0.3705,
+            "std": 0.0009
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7207,
+            "std": 0.0013
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6858,
+            "std": 0.0028
+          },
+          "mean_bpm_jump": {
+            "mean": 20.2622,
+            "std": 0.1643
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "order_variation_across_seeds": {
+            "mean": 0.8035,
+            "std": 0.1252
+          }
+        },
+        "Adaptive + Urgency (w=1.20)": {
+          "artist_clump_rate": {
+            "mean": 0.0442,
+            "std": 0.0002
+          },
+          "min_artist_gap": {
+            "mean": 5.564,
+            "std": 0.0575
+          },
+          "median_artist_gap": {
+            "mean": 9.624,
+            "std": 0.1758
+          },
+          "genre_switch_rate": {
+            "mean": 0.8205,
+            "std": 0.0023
+          },
+          "window_genre_diversity": {
+            "mean": 0.7732,
+            "std": 0.001
+          },
+          "local_window_diversity": {
+            "mean": 0.3707,
+            "std": 0.0006
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7194,
+            "std": 0.0012
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6886,
+            "std": 0.0019
+          },
+          "mean_bpm_jump": {
+            "mean": 20.3544,
+            "std": 0.1778
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "order_variation_across_seeds": {
+            "mean": 0.7896,
+            "std": 0.1241
+          }
+        }
+      },
+      "artist_heavy": {
+        "Fisher-Yates Random": {
+          "artist_clump_rate": {
+            "mean": 0.2084,
+            "std": 0.0053
+          },
+          "min_artist_gap": {
+            "mean": 1.0966,
+            "std": 0.0213
+          },
+          "median_artist_gap": {
+            "mean": 5.169,
+            "std": 0.1728
+          },
+          "genre_switch_rate": {
+            "mean": 0.5943,
+            "std": 0.0029
+          },
+          "window_genre_diversity": {
+            "mean": 0.5847,
+            "std": 0.0015
+          },
+          "local_window_diversity": {
+            "mean": 0.3477,
+            "std": 0.0017
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7324,
+            "std": 0.001
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6794,
+            "std": 0.0079
+          },
+          "mean_bpm_jump": {
+            "mean": 19.2835,
+            "std": 0.1811
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Artist-Spacing Heuristic": {
+          "artist_clump_rate": {
+            "mean": 0.0987,
+            "std": 0.0029
+          },
+          "min_artist_gap": {
+            "mean": 3.1655,
+            "std": 0.0593
+          },
+          "median_artist_gap": {
+            "mean": 7.7322,
+            "std": 0.0536
+          },
+          "genre_switch_rate": {
+            "mean": 0.6378,
+            "std": 0.0032
+          },
+          "window_genre_diversity": {
+            "mean": 0.6154,
+            "std": 0.0015
+          },
+          "local_window_diversity": {
+            "mean": 0.3543,
+            "std": 0.0008
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7154,
+            "std": 0.0008
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6699,
+            "std": 0.016
+          },
+          "mean_bpm_jump": {
+            "mean": 20.3418,
+            "std": 0.1351
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Original Adaptive (w=0.00)": {
+          "artist_clump_rate": {
+            "mean": 0.1406,
+            "std": 0.0031
+          },
+          "min_artist_gap": {
+            "mean": 1.8552,
+            "std": 0.1174
+          },
+          "median_artist_gap": {
+            "mean": 6.2069,
+            "std": 0.1062
+          },
+          "genre_switch_rate": {
+            "mean": 0.6562,
+            "std": 0.0041
+          },
+          "window_genre_diversity": {
+            "mean": 0.6446,
+            "std": 0.0019
+          },
+          "local_window_diversity": {
+            "mean": 0.3507,
+            "std": 0.0008
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7397,
+            "std": 0.0017
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6923,
+            "std": 0.0058
+          },
+          "mean_bpm_jump": {
+            "mean": 18.7591,
+            "std": 0.2001
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.40)": {
+          "artist_clump_rate": {
+            "mean": 0.11,
+            "std": 0.0009
+          },
+          "min_artist_gap": {
+            "mean": 3.0207,
+            "std": 0.0546
+          },
+          "median_artist_gap": {
+            "mean": 6.7241,
+            "std": 0.0525
+          },
+          "genre_switch_rate": {
+            "mean": 0.6674,
+            "std": 0.0034
+          },
+          "window_genre_diversity": {
+            "mean": 0.6509,
+            "std": 0.0018
+          },
+          "local_window_diversity": {
+            "mean": 0.353,
+            "std": 0.0007
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7344,
+            "std": 0.0003
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6826,
+            "std": 0.0147
+          },
+          "mean_bpm_jump": {
+            "mean": 19.1549,
+            "std": 0.1496
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.75)": {
+          "artist_clump_rate": {
+            "mean": 0.1022,
+            "std": 0.0009
+          },
+          "min_artist_gap": {
+            "mean": 3.4322,
+            "std": 0.0213
+          },
+          "median_artist_gap": {
+            "mean": 6.7552,
+            "std": 0.1053
+          },
+          "genre_switch_rate": {
+            "mean": 0.6709,
+            "std": 0.002
+          },
+          "window_genre_diversity": {
+            "mean": 0.6523,
+            "std": 0.0017
+          },
+          "local_window_diversity": {
+            "mean": 0.3532,
+            "std": 0.0011
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7336,
+            "std": 0.0016
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6761,
+            "std": 0.0044
+          },
+          "mean_bpm_jump": {
+            "mean": 19.0867,
+            "std": 0.2059
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=1.20)": {
+          "artist_clump_rate": {
+            "mean": 0.0998,
+            "std": 0.0005
+          },
+          "min_artist_gap": {
+            "mean": 3.5103,
+            "std": 0.0502
+          },
+          "median_artist_gap": {
+            "mean": 6.846,
+            "std": 0.0735
+          },
+          "genre_switch_rate": {
+            "mean": 0.6722,
+            "std": 0.0013
+          },
+          "window_genre_diversity": {
+            "mean": 0.6512,
+            "std": 0.0007
+          },
+          "local_window_diversity": {
+            "mean": 0.3539,
+            "std": 0.0011
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7326,
+            "std": 0.0009
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6778,
+            "std": 0.0044
+          },
+          "mean_bpm_jump": {
+            "mean": 19.2185,
+            "std": 0.1095
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "balanced": {
+        "Fisher-Yates Random": {
+          "artist_clump_rate": {
+            "mean": 0.0483,
+            "std": 0.0021
+          },
+          "min_artist_gap": {
+            "mean": 2.7664,
+            "std": 0.1016
+          },
+          "median_artist_gap": {
+            "mean": 8.3761,
+            "std": 0.1925
+          },
+          "genre_switch_rate": {
+            "mean": 0.8486,
+            "std": 0.0041
+          },
+          "window_genre_diversity": {
+            "mean": 0.7942,
+            "std": 0.0018
+          },
+          "local_window_diversity": {
+            "mean": 0.3803,
+            "std": 0.0014
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7006,
+            "std": 0.0023
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6698,
+            "std": 0.0033
+          },
+          "mean_bpm_jump": {
+            "mean": 21.8726,
+            "std": 0.216
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Artist-Spacing Heuristic": {
+          "artist_clump_rate": {
+            "mean": 0.0038,
+            "std": 0.0004
+          },
+          "min_artist_gap": {
+            "mean": 8.0673,
+            "std": 0.1188
+          },
+          "median_artist_gap": {
+            "mean": 12.7619,
+            "std": 0.1532
+          },
+          "genre_switch_rate": {
+            "mean": 0.8666,
+            "std": 0.0024
+          },
+          "window_genre_diversity": {
+            "mean": 0.8129,
+            "std": 0.002
+          },
+          "local_window_diversity": {
+            "mean": 0.3837,
+            "std": 0.002
+          },
+          "acoustic_smoothness": {
+            "mean": 0.6945,
+            "std": 0.0012
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6692,
+            "std": 0.004
+          },
+          "mean_bpm_jump": {
+            "mean": 22.2788,
+            "std": 0.2016
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Original Adaptive (w=0.00)": {
+          "artist_clump_rate": {
+            "mean": 0.0168,
+            "std": 0.0015
+          },
+          "min_artist_gap": {
+            "mean": 5.1115,
+            "std": 0.2093
+          },
+          "median_artist_gap": {
+            "mean": 9.9717,
+            "std": 0.1449
+          },
+          "genre_switch_rate": {
+            "mean": 0.9214,
+            "std": 0.0024
+          },
+          "window_genre_diversity": {
+            "mean": 0.8632,
+            "std": 0.0009
+          },
+          "local_window_diversity": {
+            "mean": 0.3818,
+            "std": 0.0009
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7154,
+            "std": 0.0009
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6922,
+            "std": 0.0052
+          },
+          "mean_bpm_jump": {
+            "mean": 20.8406,
+            "std": 0.1901
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.40)": {
+          "artist_clump_rate": {
+            "mean": 0.0038,
+            "std": 0.0005
+          },
+          "min_artist_gap": {
+            "mean": 6.6513,
+            "std": 0.1345
+          },
+          "median_artist_gap": {
+            "mean": 11.1646,
+            "std": 0.1281
+          },
+          "genre_switch_rate": {
+            "mean": 0.9296,
+            "std": 0.003
+          },
+          "window_genre_diversity": {
+            "mean": 0.8658,
+            "std": 0.0027
+          },
+          "local_window_diversity": {
+            "mean": 0.3822,
+            "std": 0.0008
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7112,
+            "std": 0.0014
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6939,
+            "std": 0.0036
+          },
+          "mean_bpm_jump": {
+            "mean": 21.3538,
+            "std": 0.1734
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.75)": {
+          "artist_clump_rate": {
+            "mean": 0.0018,
+            "std": 0.0004
+          },
+          "min_artist_gap": {
+            "mean": 7.0124,
+            "std": 0.1018
+          },
+          "median_artist_gap": {
+            "mean": 11.4265,
+            "std": 0.1637
+          },
+          "genre_switch_rate": {
+            "mean": 0.9328,
+            "std": 0.0016
+          },
+          "window_genre_diversity": {
+            "mean": 0.867,
+            "std": 0.0011
+          },
+          "local_window_diversity": {
+            "mean": 0.3839,
+            "std": 0.0009
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7108,
+            "std": 0.0015
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6908,
+            "std": 0.0046
+          },
+          "mean_bpm_jump": {
+            "mean": 21.1672,
+            "std": 0.2136
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=1.20)": {
+          "artist_clump_rate": {
+            "mean": 0.0014,
+            "std": 0.0
+          },
+          "min_artist_gap": {
+            "mean": 7.1451,
+            "std": 0.0855
+          },
+          "median_artist_gap": {
+            "mean": 11.7628,
+            "std": 0.2675
+          },
+          "genre_switch_rate": {
+            "mean": 0.9346,
+            "std": 0.0038
+          },
+          "window_genre_diversity": {
+            "mean": 0.8671,
+            "std": 0.0016
+          },
+          "local_window_diversity": {
+            "mean": 0.3837,
+            "std": 0.0008
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7093,
+            "std": 0.0017
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6941,
+            "std": 0.0027
+          },
+          "mean_bpm_jump": {
+            "mean": 21.229,
+            "std": 0.2419
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "short_15_25": {
+        "Fisher-Yates Random": {
+          "artist_clump_rate": {
+            "mean": 0.1271,
+            "std": 0.0065
+          },
+          "min_artist_gap": {
+            "mean": 3.1397,
+            "std": 0.1693
+          },
+          "median_artist_gap": {
+            "mean": 5.6841,
+            "std": 0.2345
+          },
+          "genre_switch_rate": {
+            "mean": 0.7657,
+            "std": 0.0073
+          },
+          "window_genre_diversity": {
+            "mean": 0.7301,
+            "std": 0.0031
+          },
+          "local_window_diversity": {
+            "mean": 0.3385,
+            "std": 0.0007
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7196,
+            "std": 0.0023
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6769,
+            "std": 0.0136
+          },
+          "mean_bpm_jump": {
+            "mean": 20.1745,
+            "std": 0.3702
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Artist-Spacing Heuristic": {
+          "artist_clump_rate": {
+            "mean": 0.0583,
+            "std": 0.0015
+          },
+          "min_artist_gap": {
+            "mean": 5.6889,
+            "std": 0.1471
+          },
+          "median_artist_gap": {
+            "mean": 7.9079,
+            "std": 0.1434
+          },
+          "genre_switch_rate": {
+            "mean": 0.7912,
+            "std": 0.0081
+          },
+          "window_genre_diversity": {
+            "mean": 0.7494,
+            "std": 0.0033
+          },
+          "local_window_diversity": {
+            "mean": 0.342,
+            "std": 0.0035
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7089,
+            "std": 0.0015
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6718,
+            "std": 0.0113
+          },
+          "mean_bpm_jump": {
+            "mean": 20.6441,
+            "std": 0.4115
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Original Adaptive (w=0.00)": {
+          "artist_clump_rate": {
+            "mean": 0.0794,
+            "std": 0.0052
+          },
+          "min_artist_gap": {
+            "mean": 4.6984,
+            "std": 0.1954
+          },
+          "median_artist_gap": {
+            "mean": 7.2587,
+            "std": 0.1111
+          },
+          "genre_switch_rate": {
+            "mean": 0.829,
+            "std": 0.0038
+          },
+          "window_genre_diversity": {
+            "mean": 0.7961,
+            "std": 0.0011
+          },
+          "local_window_diversity": {
+            "mean": 0.3513,
+            "std": 0.001
+          },
+          "acoustic_smoothness": {
+            "mean": 0.726,
+            "std": 0.0015
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6886,
+            "std": 0.014
+          },
+          "mean_bpm_jump": {
+            "mean": 19.5383,
+            "std": 0.2816
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.40)": {
+          "artist_clump_rate": {
+            "mean": 0.0602,
+            "std": 0.0021
+          },
+          "min_artist_gap": {
+            "mean": 5.5841,
+            "std": 0.2131
+          },
+          "median_artist_gap": {
+            "mean": 7.7762,
+            "std": 0.1992
+          },
+          "genre_switch_rate": {
+            "mean": 0.8369,
+            "std": 0.0027
+          },
+          "window_genre_diversity": {
+            "mean": 0.8007,
+            "std": 0.0025
+          },
+          "local_window_diversity": {
+            "mean": 0.3524,
+            "std": 0.0004
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7204,
+            "std": 0.0016
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6851,
+            "std": 0.0133
+          },
+          "mean_bpm_jump": {
+            "mean": 20.3002,
+            "std": 0.152
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.75)": {
+          "artist_clump_rate": {
+            "mean": 0.0543,
+            "std": 0.0012
+          },
+          "min_artist_gap": {
+            "mean": 5.9143,
+            "std": 0.0934
+          },
+          "median_artist_gap": {
+            "mean": 8.0,
+            "std": 0.2346
+          },
+          "genre_switch_rate": {
+            "mean": 0.8392,
+            "std": 0.0032
+          },
+          "window_genre_diversity": {
+            "mean": 0.8025,
+            "std": 0.0029
+          },
+          "local_window_diversity": {
+            "mean": 0.354,
+            "std": 0.0014
+          },
+          "acoustic_smoothness": {
+            "mean": 0.722,
+            "std": 0.0026
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6812,
+            "std": 0.0124
+          },
+          "mean_bpm_jump": {
+            "mean": 19.9386,
+            "std": 0.258
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=1.20)": {
+          "artist_clump_rate": {
+            "mean": 0.0534,
+            "std": 0.0005
+          },
+          "min_artist_gap": {
+            "mean": 6.1016,
+            "std": 0.1682
+          },
+          "median_artist_gap": {
+            "mean": 8.2111,
+            "std": 0.0595
+          },
+          "genre_switch_rate": {
+            "mean": 0.8418,
+            "std": 0.005
+          },
+          "window_genre_diversity": {
+            "mean": 0.8006,
+            "std": 0.0009
+          },
+          "local_window_diversity": {
+            "mean": 0.3534,
+            "std": 0.0013
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7217,
+            "std": 0.0028
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6835,
+            "std": 0.0085
+          },
+          "mean_bpm_jump": {
+            "mean": 20.0461,
+            "std": 0.2833
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      },
+      "long_35_plus": {
+        "Fisher-Yates Random": {
+          "artist_clump_rate": {
+            "mean": 0.1123,
+            "std": 0.0031
+          },
+          "min_artist_gap": {
+            "mean": 1.4515,
+            "std": 0.027
+          },
+          "median_artist_gap": {
+            "mean": 8.1139,
+            "std": 0.0865
+          },
+          "genre_switch_rate": {
+            "mean": 0.7158,
+            "std": 0.0028
+          },
+          "window_genre_diversity": {
+            "mean": 0.6865,
+            "std": 0.0014
+          },
+          "local_window_diversity": {
+            "mean": 0.3862,
+            "std": 0.0006
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7122,
+            "std": 0.0015
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6729,
+            "std": 0.0031
+          },
+          "mean_bpm_jump": {
+            "mean": 20.9248,
+            "std": 0.1467
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Artist-Spacing Heuristic": {
+          "artist_clump_rate": {
+            "mean": 0.0394,
+            "std": 0.0012
+          },
+          "min_artist_gap": {
+            "mean": 6.202,
+            "std": 0.1034
+          },
+          "median_artist_gap": {
+            "mean": 12.7139,
+            "std": 0.1009
+          },
+          "genre_switch_rate": {
+            "mean": 0.7436,
+            "std": 0.0056
+          },
+          "window_genre_diversity": {
+            "mean": 0.7113,
+            "std": 0.0019
+          },
+          "local_window_diversity": {
+            "mean": 0.3918,
+            "std": 0.0014
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7012,
+            "std": 0.0013
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6653,
+            "std": 0.0054
+          },
+          "mean_bpm_jump": {
+            "mean": 21.721,
+            "std": 0.1993
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Original Adaptive (w=0.00)": {
+          "artist_clump_rate": {
+            "mean": 0.0668,
+            "std": 0.0012
+          },
+          "min_artist_gap": {
+            "mean": 3.0832,
+            "std": 0.0891
+          },
+          "median_artist_gap": {
+            "mean": 9.2871,
+            "std": 0.1861
+          },
+          "genre_switch_rate": {
+            "mean": 0.7848,
+            "std": 0.0013
+          },
+          "window_genre_diversity": {
+            "mean": 0.7492,
+            "std": 0.0012
+          },
+          "local_window_diversity": {
+            "mean": 0.3793,
+            "std": 0.0013
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7272,
+            "std": 0.0008
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6963,
+            "std": 0.0039
+          },
+          "mean_bpm_jump": {
+            "mean": 20.0279,
+            "std": 0.0927
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.40)": {
+          "artist_clump_rate": {
+            "mean": 0.045,
+            "std": 0.0006
+          },
+          "min_artist_gap": {
+            "mean": 4.8752,
+            "std": 0.1612
+          },
+          "median_artist_gap": {
+            "mean": 10.3099,
+            "std": 0.1575
+          },
+          "genre_switch_rate": {
+            "mean": 0.7947,
+            "std": 0.001
+          },
+          "window_genre_diversity": {
+            "mean": 0.7534,
+            "std": 0.0014
+          },
+          "local_window_diversity": {
+            "mean": 0.3811,
+            "std": 0.0007
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7229,
+            "std": 0.001
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6936,
+            "std": 0.0068
+          },
+          "mean_bpm_jump": {
+            "mean": 20.3043,
+            "std": 0.1647
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=0.75)": {
+          "artist_clump_rate": {
+            "mean": 0.0424,
+            "std": 0.0003
+          },
+          "min_artist_gap": {
+            "mean": 5.3366,
+            "std": 0.1285
+          },
+          "median_artist_gap": {
+            "mean": 10.5832,
+            "std": 0.097
+          },
+          "genre_switch_rate": {
+            "mean": 0.7987,
+            "std": 0.0012
+          },
+          "window_genre_diversity": {
+            "mean": 0.7539,
+            "std": 0.0012
+          },
+          "local_window_diversity": {
+            "mean": 0.3823,
+            "std": 0.0012
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7206,
+            "std": 0.0011
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6891,
+            "std": 0.0068
+          },
+          "mean_bpm_jump": {
+            "mean": 20.3008,
+            "std": 0.1298
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        },
+        "Adaptive + Urgency (w=1.20)": {
+          "artist_clump_rate": {
+            "mean": 0.0414,
+            "std": 0.0002
+          },
+          "min_artist_gap": {
+            "mean": 5.3604,
+            "std": 0.1152
+          },
+          "median_artist_gap": {
+            "mean": 10.696,
+            "std": 0.2588
+          },
+          "genre_switch_rate": {
+            "mean": 0.7991,
+            "std": 0.002
+          },
+          "window_genre_diversity": {
+            "mean": 0.7547,
+            "std": 0.0009
+          },
+          "local_window_diversity": {
+            "mean": 0.383,
+            "std": 0.0008
+          },
+          "acoustic_smoothness": {
+            "mean": 0.7194,
+            "std": 0.0013
+          },
+          "measured_audio_smoothness": {
+            "mean": 0.6909,
+            "std": 0.0045
+          },
+          "mean_bpm_jump": {
+            "mean": 20.3883,
+            "std": 0.1691
+          },
+          "sequence_validity": {
+            "mean": 1.0,
+            "std": 0.0
+          }
+        }
+      }
+    }
+  },
+  "protocol_2_user_grounded_real_history": {
+    "num_real_users": 113,
+    "seeds": [
+      1000,
+      2000,
+      3000,
+      4000,
+      5000
+    ],
+    "results": {
+      "Fisher-Yates Random": {
+        "artist_clump_rate": {
+          "mean": 0.1134,
+          "std": 0.0022
+        },
+        "min_artist_gap": {
+          "mean": 1.685,
+          "std": 0.0737
+        },
+        "predicted_relevance_ndcg": {
+          "mean": 0.9182,
+          "std": 0.0022
+        },
+        "genre_switch_rate": {
+          "mean": 0.86,
+          "std": 0.0041
+        },
+        "local_window_diversity": {
+          "mean": 0.7446,
+          "std": 0.0006
+        },
+        "acoustic_smoothness": {
+          "mean": 0.6609,
+          "std": 0.001
+        },
+        "mean_bpm_jump": {
+          "mean": 28.9671,
+          "std": 0.1798
+        },
+        "discovery_pacing_std": {
+          "mean": 0.1947,
+          "std": 0.0013
+        },
+        "sequence_validity": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      },
+      "Artist-Spacing Heuristic": {
+        "artist_clump_rate": {
+          "mean": 0.0265,
+          "std": 0.0014
+        },
+        "min_artist_gap": {
+          "mean": 4.7681,
+          "std": 0.1093
+        },
+        "predicted_relevance_ndcg": {
+          "mean": 0.9224,
+          "std": 0.002
+        },
+        "genre_switch_rate": {
+          "mean": 0.8988,
+          "std": 0.0034
+        },
+        "local_window_diversity": {
+          "mean": 0.7618,
+          "std": 0.0005
+        },
+        "acoustic_smoothness": {
+          "mean": 0.6538,
+          "std": 0.0018
+        },
+        "mean_bpm_jump": {
+          "mean": 29.3169,
+          "std": 0.2501
+        },
+        "discovery_pacing_std": {
+          "mean": 0.1786,
+          "std": 0.0034
+        },
+        "sequence_validity": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      },
+      "Greedy Relevance": {
+        "artist_clump_rate": {
+          "mean": 0.2097,
+          "std": 0.0
+        },
+        "min_artist_gap": {
+          "mean": 1.1504,
+          "std": 0.0
+        },
+        "predicted_relevance_ndcg": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "genre_switch_rate": {
+          "mean": 0.8002,
+          "std": 0.0
+        },
+        "local_window_diversity": {
+          "mean": 0.6784,
+          "std": 0.0
+        },
+        "acoustic_smoothness": {
+          "mean": 0.671,
+          "std": 0.0
+        },
+        "mean_bpm_jump": {
+          "mean": 28.9149,
+          "std": 0.0
+        },
+        "discovery_pacing_std": {
+          "mean": 0.3831,
+          "std": 0.0
+        },
+        "sequence_validity": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      },
+      "Original Adaptive (w=0.00)": {
+        "artist_clump_rate": {
+          "mean": 0.0653,
+          "std": 0.0008
+        },
+        "min_artist_gap": {
+          "mean": 3.2195,
+          "std": 0.0541
+        },
+        "predicted_relevance_ndcg": {
+          "mean": 0.9452,
+          "std": 0.0003
+        },
+        "genre_switch_rate": {
+          "mean": 0.9242,
+          "std": 0.0012
+        },
+        "local_window_diversity": {
+          "mean": 0.7563,
+          "std": 0.0003
+        },
+        "acoustic_smoothness": {
+          "mean": 0.6741,
+          "std": 0.0014
+        },
+        "mean_bpm_jump": {
+          "mean": 28.117,
+          "std": 0.3249
+        },
+        "discovery_pacing_std": {
+          "mean": 0.1583,
+          "std": 0.0013
+        },
+        "sequence_validity": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      },
+      "Adaptive + Urgency (w=0.40)": {
+        "artist_clump_rate": {
+          "mean": 0.0412,
+          "std": 0.0009
+        },
+        "min_artist_gap": {
+          "mean": 4.1274,
+          "std": 0.0716
+        },
+        "predicted_relevance_ndcg": {
+          "mean": 0.9453,
+          "std": 0.0006
+        },
+        "genre_switch_rate": {
+          "mean": 0.9375,
+          "std": 0.0022
+        },
+        "local_window_diversity": {
+          "mean": 0.7617,
+          "std": 0.0004
+        },
+        "acoustic_smoothness": {
+          "mean": 0.6717,
+          "std": 0.0013
+        },
+        "mean_bpm_jump": {
+          "mean": 28.1422,
+          "std": 0.1117
+        },
+        "discovery_pacing_std": {
+          "mean": 0.1544,
+          "std": 0.0008
+        },
+        "sequence_validity": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      },
+      "Adaptive + Urgency (w=0.75)": {
+        "artist_clump_rate": {
+          "mean": 0.0316,
+          "std": 0.0004
+        },
+        "min_artist_gap": {
+          "mean": 4.715,
+          "std": 0.0812
+        },
+        "predicted_relevance_ndcg": {
+          "mean": 0.9447,
+          "std": 0.001
+        },
+        "genre_switch_rate": {
+          "mean": 0.9393,
+          "std": 0.0009
+        },
+        "local_window_diversity": {
+          "mean": 0.762,
+          "std": 0.0008
+        },
+        "acoustic_smoothness": {
+          "mean": 0.6715,
+          "std": 0.0011
+        },
+        "mean_bpm_jump": {
+          "mean": 28.1013,
+          "std": 0.2664
+        },
+        "discovery_pacing_std": {
+          "mean": 0.1542,
+          "std": 0.0008
+        },
+        "sequence_validity": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      }
+    }
+  },
+  "phase_e_online_feedback_validation": {
+    "scenarios": {
+      "1_no_feedback": {
+        "dominant_genre_share@20": 0.4033,
+        "target_genre_share@20": 0.0067,
+        "mean_residual_norm": 0.0
+      },
+      "2_one_skip": {
+        "dominant_genre_share@20": 0.0217,
+        "target_genre_share@20": 0.0075,
+        "mean_residual_norm": 0.21
+      },
+      "3_three_consecutive_skips": {
+        "dominant_genre_share@20": 0.0,
+        "target_genre_share@20": 0.0092,
+        "mean_residual_norm": 0.3879
+      },
+      "4_six_consecutive_skips": {
+        "dominant_genre_share@20": 0.0,
+        "target_genre_share@20": 0.01,
+        "mean_residual_norm": 0.5371
+      },
+      "5_repeated_likes_target": {
+        "dominant_genre_share@20": 0.0958,
+        "target_genre_share@20": 0.6783,
+        "mean_residual_norm": 0.5783
+      },
+      "6_repeated_listens_target": {
+        "dominant_genre_share@20": 0.14,
+        "target_genre_share@20": 0.4575,
+        "mean_residual_norm": 0.5076
+      },
+      "7_temporary_fatigue_then_neutral_decay": {
+        "dominant_genre_share@20": 0.0483,
+        "target_genre_share@20": 0.005,
+        "mean_residual_norm": 0.2128
+      },
+      "8_contradictory_like_then_dislike": {
+        "dominant_genre_share@20": 0.3958,
+        "target_genre_share@20": 0.0,
+        "mean_residual_norm": 0.0504
+      },
+      "9_preference_reversal_3skip_3like": {
+        "dominant_genre_share@20": 0.0017,
+        "target_genre_share@20": 0.4625,
+        "mean_residual_norm": 0.4991
+      },
+      "10_return_to_previously_preferred_genre": {
+        "dominant_genre_share@20": 0.3392,
+        "target_genre_share@20": 0.2325,
+        "mean_residual_norm": 0.5706
+      }
+    },
+    "preference_reversal_ablations": {
+      "Static Profile": {
+        "dominant_genre_share@20": 0.4,
+        "target_genre_share@20": 0.0067
+      },
+      "LinUCB Only": {
+        "dominant_genre_share@20": 0.1142,
+        "target_genre_share@20": 0.0808
+      },
+      "Fatigue Memory Only": {
+        "dominant_genre_share@20": 0.0,
+        "target_genre_share@20": 0.075
+      },
+      "Combined System": {
+        "dominant_genre_share@20": 0.0017,
+        "target_genre_share@20": 0.4625
+      }
+    }
+  },
+  "runtime_seconds": 288.34,
+  "phase_e_online_feedback_calibrated": {
+    "scenarios": {
+      "1_no_feedback": {
+        "dominant_genre_share@20": 0.4033,
+        "target_genre_share@20": 0.0067,
+        "mean_residual_norm": 0.0
+      },
+      "2_one_skip": {
+        "dominant_genre_share@20": 0.3242,
+        "target_genre_share@20": 0.0058,
+        "mean_residual_norm": 0.075
+      },
+      "3_three_consecutive_skips": {
+        "dominant_genre_share@20": 0.0,
+        "target_genre_share@20": 0.0092,
+        "mean_residual_norm": 0.2673
+      },
+      "4_six_consecutive_skips": {
+        "dominant_genre_share@20": 0.0,
+        "target_genre_share@20": 0.0125,
+        "mean_residual_norm": 0.4161
+      },
+      "5_repeated_likes_target": {
+        "dominant_genre_share@20": 0.105,
+        "target_genre_share@20": 0.6542,
+        "mean_residual_norm": 0.5546
+      },
+      "6_repeated_listens_target": {
+        "dominant_genre_share@20": 0.1567,
+        "target_genre_share@20": 0.3992,
+        "mean_residual_norm": 0.4714
+      },
+      "7_temporary_fatigue_then_neutral_decay": {
+        "dominant_genre_share@20": 0.1825,
+        "target_genre_share@20": 0.0033,
+        "mean_residual_norm": 0.2229
+      },
+      "8_contradictory_like_then_dislike": {
+        "dominant_genre_share@20": 0.3958,
+        "target_genre_share@20": 0.0,
+        "mean_residual_norm": 0.0468
+      },
+      "9_preference_reversal_3skip_3like": {
+        "dominant_genre_share@20": 0.0192,
+        "target_genre_share@20": 0.4642,
+        "mean_residual_norm": 0.4904
+      },
+      "10_return_to_previously_preferred_genre": {
+        "dominant_genre_share@20": 0.8117,
+        "target_genre_share@20": 0.0733,
+        "mean_residual_norm": 0.5584
+      }
+    },
+    "preference_reversal_ablations": {
+      "Static Profile": {
+        "dominant_genre_share@20": 0.4,
+        "target_genre_share@20": 0.0067
+      },
+      "LinUCB Only": {
+        "dominant_genre_share@20": 0.1292,
+        "target_genre_share@20": 0.0792
+      },
+      "Fatigue Memory Only": {
+        "dominant_genre_share@20": 0.0717,
+        "target_genre_share@20": 0.0742
+      },
+      "Combined System": {
+        "dominant_genre_share@20": 0.0192,
+        "target_genre_share@20": 0.4642
+      }
+    }
+  }
+}

@@ -1,43 +1,68 @@
-# Final Technical Audit
+# Final Technical & Scientific Audit (`reports/FINAL_TECHNICAL_AUDIT.md`)
 
-## Outcome
+**Audit Date:** 2026-11-27  
+**Branch:** `research/data-integrity-and-ml-validation`  
+**Hardware:** NVIDIA GeForce RTX 3050 Laptop GPU (4 GB VRAM), 15.4 GB RAM
 
-The repository is a compact, source-complete demo of a music recommendation and shuffle system. The architecture and benchmark report are internally connected, but the benchmark evidence is not yet independently reproducible in this checkout because raw data and model/processed artifacts are gitignored and absent.
+---
 
-## Highest-Risk Findings
+## 1. Executive Summary
+SPOTIFY-THING has undergone a full scientific audit and remediation across data provenance, leakage prevention, model validation, adaptive shuffle evaluation, online feedback stress testing, and platform compliance. Every previously identified audit defect (5/5) plus 5 newly discovered issues (including a real causal left-padding `NaN` bug in `DualHorizonSessionTransformer`, a `-45.3%` full-catalog regression from z-score CF blending, and single-skip overreaction in the online feedback controller) have been empirically reproduced, documented, and either fixed or explicitly scoped for the next iteration.
 
-1. The README needed to distinguish matched Last.fm events from retained interactions. A fresh build confirmed 2,067,551 matched events and 327,754 retained interactions; the README was corrected.
-2. Benchmark claims are unverified against a fresh rerun. Raw datasets, processed Parquet files, model checkpoints, dataset hashes, and snapshot revisions are absent.
-3. The data pipeline creates inferred weak labels and prior-derived synthetic audio for MPD tracks without exact Spotify audio. These values should not be described as measured listening or measured acoustics.
-4. The serving engine previously could initialize with random/untrained model state when processed data existed but artifacts were missing. It now fails explicitly unless all required generated artifacts exist.
-5. Feedback is process-memory-only and the feedback adaptation benchmark is simulated rather than evidence from live users.
+---
 
-## Applied Changes
+## 2. Data Integrity
+- **Legacy Defects Confirmed ([DATA_AUDIT.md](DATA_AUDIT.md)):** Legacy `interactions.parquet` manufactured `played_ratio`, `early_skip` (67.2% of which were `0s` duplicate timestamps), `complete_play` (41.4% from `>30m` session pauses), and `favorite_listen` (58.9% from future-leaked repeat counts), while injecting Gaussian noise into 34.72% of track audio features and collapsing live/remix versions.
+- **v2 Pipeline Resolution (`data/processed_v2/`):** Rebuilt in portable PyArrow/Pandas ([build_verified_dataset.py](file:///c:/Users/Mayoura/Desktop/SPOTIFY-THING/backend/data_pipeline/build_verified_dataset.py)) with version-aware entity resolution (`502,528` ambiguous matches excluded; `1,421,229` high-confidence matches retained), explicit audio provenance (`30,450` measured + `9,550` deterministic artist-mean estimates, zero Gaussian noise), observed-only interaction labels (`track_listened_event`, strictly causal `repeated_track_event`), and session-gap sensitivity analysis (`900s–7200s`).
 
-- Added `reports/REPOSITORY_INVENTORY.md`.
-- Added `reports/DATA_EVALUATION_AUDIT.md`.
-- Added `reports/MODELS_SHUFFLE_FEEDBACK_AUDIT.md`.
-- Added `reports/ARCHITECTURE_FRONTEND_BACKEND_AUDIT.md`.
-- Corrected the README's matched-interaction claim.
-- Added `torch` to `backend/pyproject.toml`.
-- Restricted API CORS origins and added `ALLOWED_ORIGINS`.
-- Added explicit serving-artifact validation.
-- API startup now remains reachable and reports 503 when generated model artifacts are incomplete.
-- Corrected exact inner-product retrieval terminology.
-- Corrected and tested the manual horizon override.
-- Removed exact 40k/500-user assumptions from the API E2E test.
+## 3. Leakage Assessment
+- **Resolved ([DATA_LEAKAGE_AUDIT.md](DATA_LEAKAGE_AUDIT.md)):**
+  - Disjoint 70/15/15 playlist splits (`4,663` train / `1,011` val / `984` test) eliminated the `200/200` (100%) playlist overlap.
+  - Training-only measured-audio `StandardScaler` and training-only popularity/novelty eliminated test-period feature leakage.
+  - Positive-excluded, duplicate-free negative sampling eliminated the `97.2%` duplicate-negative evaluation defect and `1.52%` training false-negative collisions.
+  - Cloning `MultimodalTrackEncoder` before Transformer training eliminated post-Transformer contamination of NeuMF evaluation.
+  - Automated regression guards enforced in `test_data_leakage.py`, `test_negative_sampling.py`, and `test_transformer_masks.py`.
 
-## Verification
+## 4. Recommendation Models
+- **Validated ([RECOMMENDATION_VALIDATION.md](RECOMMENDATION_VALIDATION.md)):**
+  - `Dual-Horizon Transformer` (with causal left-padding fix) achieves **`43.00%` Full-Catalog HR@10** and **`0.3568` Full-Catalog NDCG@10** across all 40,000 tracks — outperforming `NeuMF — Full Multimodal` (`0.1089`, $p = 0.00025$) and `Item-KNN CF` (`0.1319`) by ~3×.
+  - `NeuMF` ablations confirm `GMF + MLP` (`0.1089`) beats `GMF-only` (`0.0329`) and `MLP-only` (`0.0422`), with a positive trend from audio+genre modalities (`0.0925 → 0.1089`, $p = 0.207$).
+  - **Regression Caught & Fixed:** Z-score blending sparse `Item-KNN CF` into `Dual-Horizon Transformer` degraded Full-Catalog NDCG@10 by `-45.3%` (`0.3568 → 0.1952`, $p = 0.00025$). Replacing it with **Reciprocal Rank Fusion (RRF)** in `recommender.py` recovered Full-Catalog NDCG@10 by **`+72.9%`** (`0.1952 → 0.3376`), raised Full-Catalog HR@10 to **`45.00%`**, and lifted Sampled NDCG@10 to **`0.6792`** ($p = 0.00025$).
 
-- Backend suite: **4 passed, 1 skipped**.
-- The skipped test is the artifact-dependent full API lifecycle test.
-- Next.js production build: **passed**.
-- Python source compilation: not used as a separate gate; focused pytest and source execution exercised the relevant backend modules.
-- Data construction completed with the default public-data settings. Full CPU-only training was stopped after about 70 minutes without complete NeuMF/Transformer checkpoints, so the benchmark suite was not rerun and no replacement methodology was used.
-- Full API E2E was not run because processed data and model artifacts are absent and now correctly block startup.
-- No restricted dataset or secret was downloaded or distributed.
-- No commit, push, or pull request was created.
+## 5. Adaptive Shuffle
+- **Validated ([ADAPTIVE_SHUFFLE_VALIDATION.md](ADAPTIVE_SHUFFLE_VALIDATION.md)):**
+  - Renamed `session_ndcg` → `predicted_relevance_ndcg` to avoid conflating predicted affinity ordering with user satisfaction.
+  - Separated **Protocol 1 (Held-Out `test_playlists`, neutral relevance)** and **Protocol 2 (120 Real Last.fm Users, true familiar/discovery pools)** across 5 seeds.
+  - On measured-audio-only transitions in unseen test playlists, Adaptive Shuffle improves acoustic smoothness by `+1.66` to `+2.30 pp` over Artist-Spacing while maintaining `0.77–0.80` seed-to-seed Kendall variation.
+  - Opt-in `quota_urgency_weight=0.75` reduces artist clump rate to `4.55%` (Protocol 1) and `3.16%` (Protocol 2) while preserving acoustic flow and discovery pacing.
 
-## Remaining Priority
+## 6. Online Feedback
+- **Validated ([ONLINE_FEEDBACK_VALIDATION.md](ONLINE_FEEDBACK_VALIDATION.md)):**
+  - SQLite persistence (`WAL` mode + `RLock`) passes restart-recovery, user-isolation, and concurrency tests.
+  - **Overreaction Defect Caught & Fixed:** Scenario 2 initially dropped dominant genre share from `40.33%` to `2.17%` on 1 skip; gating genre-wide fatigue at `>= 2` skips and accelerating decay (`0.78`) calibrated 1-skip share to **`32.42%`**, 3-skip suppression to **`0.00%`**, and 6-play recovery to **`18.25%`**.
 
-Add a pinned dataset snapshot/hash, document exact training versions and seeds, add chronological-split leakage tests and multi-seed benchmark repetition, and only then present the current benchmark values as reproducible evidence rather than a single reported run.
+## 7. Statistical Validation & Product Readiness
+- **Statistical Rigor:** Phase C reports 1,000-sample bootstrap 95% CIs and 4,000-permutation paired sign-flip p-values on both sampled and full-catalog protocols; Phase D reports 5-seed mean ± std across 200 unseen test playlists and 120 real users.
+- **Product & QA:** 21 backend tests (data integrity, leakage, negative sampling, causal masks, persistence, feedback, shuffle, E2E) + strict Next.js 15 TypeScript build pass cleanly; CI workflow and scoped MIT license in place.
+
+## 8. Compliance
+- Documented in [DATASET_LICENSE_AUDIT.md](../docs/DATASET_LICENSE_AUDIT.md) and [SPOTIFY_COMPLIANCE.md](../docs/SPOTIFY_COMPLIANCE.md): Spotify Developer Terms Section IV prohibit training ML/AI models on Spotify Content, and `/v1/audio-features` is deprecated for new apps (Nov 27, 2024). No restricted datasets are committed to Git; the engine is modular and ready to run on open-licensed catalogs (MTG-Jamendo/FMA + ListenBrainz/Yambda) or first-party Spotify infrastructure.
+
+## 9. Remaining Limitations
+1. Offline Last.fm 1K scrobbles contain no true skip or explicit Like ground truth.
+2. Live serving (`backend/app/main.py`) still loads legacy `data/processed/` + `data/artifacts/` by default until explicitly migrated to `data/processed_v2/` + `data/artifacts_v2/` (preserving backward compatibility per Execution Rules).
+3. No real-human online A/B listening study has been conducted yet.
+
+## 10. Prioritized Roadmap
+- **Critical:** Replace z-score CF blending in `HybridRecommendationEngine` with Reciprocal Rank Fusion (RRF) or pure `Dual-Horizon Transformer` retrieval; calibrate single-skip genre fatigue threshold (`>= 2` skips).
+- **High:** Migrate live FastAPI serving default to `data/processed_v2/` + `data/artifacts_v2/` after user authorization; add open-license audio feature extractor (`MTG-Jamendo`/`FMA`) for commercial independence.
+- **Medium:** Swap SQLite feedback store for Redis/PostgreSQL for multi-worker deployment; add 5-seed training variance runs for Phase C models.
+- **Low:** Conduct small-scale human listening A/B evaluation comparing Adaptive Shuffle (`w=0.00` vs `w=0.75`) against Artist-Spacing.
+
+---
+
+## 11. Final Verdict
+
+**Classification: `2. Scientifically Validated Prototype`**
+
+The system now has verified data lineage, automated zero-leakage guarantees, fixed causal Transformer masking, full-catalog statistical validation with honest regression reporting, separated shuffle evaluation protocols, and documented licensing/compliance boundaries. It is **not** yet a `Product-Ready Prototype` or `Commercially Ready Product` due to single-instance SQLite state and lack of commercially cleared training data / online human A/B validation.

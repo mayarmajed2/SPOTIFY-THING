@@ -205,6 +205,7 @@ export const api = {
     genre_cooldown: number;
     entropy_temperature: number;
     discovery_target: number;
+    quota_urgency_weight?: number;
     seed?: number | null;
   }) =>
     apiFetch<ShuffleCompareResponse>("/shuffle/compare", {
