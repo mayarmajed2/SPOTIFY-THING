@@ -19,6 +19,9 @@ dependencies = [
     "uvicorn[standard]>=0.32.0",
 ]
 
+[tool.setuptools.packages.find]
+include = ["app*", "training*", "data_pipeline*"]
+
 [tool.pytest.ini_options]
 markers = [
     "requires_dataset: integration tests requiring locally built data/processed parquet files and checkpoints",
