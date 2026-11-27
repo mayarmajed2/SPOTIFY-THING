@@ -12,10 +12,13 @@ from typing import Any
 
 import numpy as np
 import torch
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
+from backend.app.api.v1 import create_v1_router, sanitize_message
 from backend.app.engine.adaptive_shuffle import ShuffleConfig
+from backend.app.engine.extension_store import ExtensionUserStore
 from backend.app.engine.recommender import HybridRecommendationEngine
 from backend.app.schemas.api_models import (
     FeedbackRequest,
@@ -30,6 +33,7 @@ ARTIFACTS_DIR = Path(os.getenv("ARTIFACTS_DIR", str(ROOT_DIR / "data" / "artifac
 REPORTS_DIR = Path(os.getenv("REPORTS_DIR", str(ROOT_DIR / "data" / "reports")))
 
 ENGINE: HybridRecommendationEngine | None = None
+EXTENSION_STORE: ExtensionUserStore | None = None
 
 ACTION_LABELS = {
     0: "early_skip",
@@ -47,12 +51,28 @@ def get_engine() -> HybridRecommendationEngine:
     return ENGINE
 
 
+def is_engine_ready() -> bool:
+    return ENGINE is not None
+
+
+def get_extension_store() -> ExtensionUserStore:
+    global EXTENSION_STORE
+    if EXTENSION_STORE is None:
+        ext_db_env = os.getenv("RESONANCE_EXTENSION_DB")
+        ext_db = Path(ext_db_env) if ext_db_env else (ARTIFACTS_DIR / "extension_state.db")
+        EXTENSION_STORE = ExtensionUserStore(ext_db)
+    return EXTENSION_STORE
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global ENGINE
+    global ENGINE, EXTENSION_STORE
     device = "cuda" if torch.cuda.is_available() else "cpu"
     feedback_db_env = os.getenv("RESONANCE_FEEDBACK_DB")
     feedback_db = Path(feedback_db_env) if feedback_db_env else (ARTIFACTS_DIR / "feedback_state.db")
+    ext_db_env = os.getenv("RESONANCE_EXTENSION_DB")
+    ext_db = Path(ext_db_env) if ext_db_env else (ARTIFACTS_DIR / "extension_state.db")
+    EXTENSION_STORE = ExtensionUserStore(ext_db)
     if (PROCESSED_DIR / "tracks.parquet").exists():
         try:
             ENGINE = HybridRecommendationEngine(
@@ -68,8 +88,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Resonance — Intelligent Music Recommendation & Adaptive Shuffle API",
-    version="1.0.0",
+    title="SPOTIFY-THING (Resonance) — Companion Extension & Recommendation API",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -84,15 +104,37 @@ def _parse_cors_origins() -> list[str]:
     return origins or ["http://localhost:3000", "http://127.0.0.1:3000"]
 
 
+def _parse_extension_cors_regex() -> str | None:
+    """Allow Chrome Extension origins (`chrome-extension://<32-char-id>`) and localhost Vite dev previews safely."""
+    allow_ext = os.getenv("RESONANCE_ALLOW_EXTENSION_CORS", "true").lower().strip() in ("1", "true", "yes")
+    if not allow_ext:
+        return None
+    custom_ext_id = os.getenv("RESONANCE_CHROME_EXTENSION_ID", "").strip()
+    if custom_ext_id:
+        return rf"^chrome-extension://{custom_ext_id}$"
+    return r"^(chrome-extension://[a-p]{32}|http://localhost:5173|http://127.0.0.1:5173)$"
+
+
 CORS_ORIGINS = _parse_cors_origins()
+CORS_ORIGIN_REGEX = _parse_extension_cors_regex()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
+    allow_origin_regex=CORS_ORIGIN_REGEX,
     allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Extension-Token"],
 )
+
+
+@app.exception_handler(Exception)
+async def sanitized_unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    safe_detail = sanitize_message("Internal server error while processing request.")
+    return JSONResponse(status_code=500, content={"detail": safe_detail})
+
+
+app.include_router(create_v1_router(get_engine, get_extension_store, is_engine_ready))
 
 
 @app.get("/api/health")

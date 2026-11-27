@@ -1,96 +1,102 @@
-# Resonance — Intelligent Music Recommendation & Adaptive Shuffle System
+# SPOTIFY-THING — AI Music Discovery & Adaptive Shuffle Companion Extension
 
-An end-to-end Machine Learning, Deep Learning, and Probabilistic Optimization platform addressing playlist artist/genre clumping, acoustic whiplash, and static personalization in modern music streaming platforms.
+An independent AI-powered Chrome Companion Extension (Manifest V3) and PyTorch Recommender & Adaptive Shuffle Engine designed to work alongside Spotify.
 
-![Resonance Studio — Interactive Discovery, Taste Radar & Live Bandit Feedback](docs/studio_preview.png)
-
----
-
-## Core Architecture & Capabilities
-
-1. **Shared Multimodal Representation Space ($\mathbb{R}^{128}$):** Fuses collaborative track IDs, 12D standardized Spotify acoustic features (`danceability`, `energy`, `valence`, `tempo`, `acousticness`, `instrumentalness`, `speechiness`, `liveness`, `loudness`, `key`, `mode`, `explicit`), genre embeddings, and artist embeddings with modality dropout (`p = 0.15`) for cold-start discovery alignment.
-2. **Dual-Horizon Preference Modeling:** Combines **Neural Collaborative Filtering (`NeuMF`)** for stable long-term taste ($\mathbf{u}_{\text{long}}$) with a **2-Layer Causal Session Transformer** over chronological listening sequences and timestamp-derived implicit actions (`early_skip`, `partial_play`, `complete_play`, `repeat`, `like`) for active session mood ($\mathbf{u}_{\text{short}}$).
-3. **Familiarity vs. Discovery Controller:** Dual-pool vector retrieval + Maximal Marginal Relevance (`MMR`) + Self-Information Novelty ($-\log_2 P(i)$).
-4. **Continuous Online Feedback Loop:** Sub-millisecond diagonal **LinUCB Contextual Bandit** + dynamic artist/genre fatigue memory adapting live to skips, likes, listening duration, and repeats.
-5. **Constrained Probabilistic Adaptive Shuffle:** Optimizes personalized relevance, Circle-of-Fifths / harmonic BPM / energy transition flow, sliding-window diversity, and exponential artist/genre cooldown penalties with Boltzmann temperature sampling.
+**Spotify handles music playback. SPOTIFY-THING provides the independent neural recommendation intelligence, Adaptive Shuffle sequencing, transparent music insights, and online bandit personalization.**
 
 ---
 
-## Empirical Benchmark Highlights
+## Target Architecture
 
-Trained and evaluated on a fused catalog of **40,000 Spotify tracks** (8,146 artists, 114 genres), **6,932 curated Spotify playlists**, **2,067,551 matched timestamped Last.fm listening events**, and **327,754 retained timestamp-derived listening interactions** across **943 multi-session listeners**:
-
-### 1. Next-Track Recommendation (Chronological Leave-Last-Out Split)
-
-| Model | `HR@10` ↑ | `NDCG@10` ↑ | `MRR@10` ↑ | `ILD@20` ↑ | `Novelty@20` ↑ | `Coverage@20` ↑ |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Popularity Baseline | 20.83% | 0.1074 | 0.0764 | 0.6939 | 0.2161 | 0.07% |
-| Item-KNN Co-occurrence CF | 67.17% | 0.5008 | 0.4468 | 0.6528 | 0.1426 | 9.74% |
-| BPR Matrix Factorization | 70.00% | 0.4311 | 0.3477 | **0.7181** | 0.0659 | 3.24% |
-| Multimodal NeuMF (`GMF + MLP`) | 76.00% | 0.6059 | 0.5568 | 0.6820 | 0.1226 | 11.08% |
-| Dual-Horizon Session Transformer | 77.50% | 0.6289 | 0.5839 | 0.6330 | 0.1794 | 13.00% |
-| **Proposed Hybrid + Discovery (MMR)** | **79.67%** | **0.6631** | **0.6214** | 0.6605 | **0.1958** | **13.19%** |
-
-![Recommendation Benchmarks](data/reports/recommendation_benchmarks.png)
-
-### 2. Adaptive Shuffle vs. Baselines (200 Curated Playlists)
-
-| Shuffle Algorithm | Artist Clump Rate ↓ | Min Artist Gap ↑ | Genre Switch % ↑ | Acoustic Flow ↑ | Mean BPM Jump ↓ | Session `NDCG` ↑ |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Fisher-Yates True Random | 11.40% | 2.01 | 75.74% | 70.62% | ±21.45 BPM | 0.3063 |
-| Spotify-Style Artist Spaced | **4.79%** | **6.21** | 78.70% | 69.80% | ±22.00 BPM | 0.3068 |
-| Greedy Relevance Order | 15.87% | 1.61 | 73.08% | 71.33% | ±21.02 BPM | **0.7400** |
-| **Proposed Adaptive Shuffle** | **7.63%** | **3.53** | **82.24%** | **71.87%** | **±20.65 BPM** | **0.5250** |
-
-![Shuffle Benchmarks](data/reports/shuffle_benchmarks.png)
-
-### 3. Real-Time Online Feedback Adaptation (100 Simulated Mood Shifts)
-- **Before Feedback:** Fatigued/Skipped Genre Share = `38.30%` · Newly Liked Genre Share = `0.95%`
-- **After 3 Early Skips + 3 Likes (`LinUCB + Fatigue Memory`):** Fatigued Genre Share = **`0.05%`** · Newly Liked Genre Share = **`44.45%`**
-
----
-
-## Quick Start
-
-### 1. Set Up Python 3.12 Virtual Environment
-```powershell
-uv venv backend/.venv --python 3.12
-uv pip install --python backend/.venv/Scripts/python.exe torch --index-url https://download.pytorch.org/whl/cu124
-uv pip install --python backend/.venv/Scripts/python.exe duckdb fastapi "uvicorn[standard]" pydantic pyarrow pandas numpy scipy huggingface-hub tqdm matplotlib pytest httpx
+```text
+SPOTIFY-THING/
+├── extension/        # Manifest V3 Chrome Companion Extension (TypeScript + React 19 + Vite)
+│   ├── manifest.json # Minimal permissions (storage, identity, sidePanel), strict CSP, zero DOM scraping
+│   ├── src/          # Popup/Side-Panel UI, Onboarding, Discovery, Shuffle Studio, Insights, Settings, PKCE
+│   └── public/icons/ # Extension icon bundle (16/32/48/128 PNG)
+├── backend/          # FastAPI Companion Server (/api/v1/* + legacy /api/*) & PyTorch ML/DL Engine
+│   ├── app/          # NeuMF, Dual-Horizon Transformer, RRF Hybrid, Adaptive Shuffle, LinUCB, SQLite Stores
+│   ├── data_pipeline/# Independent catalog & interaction builders
+│   ├── training/     # GPU training & multi-seed shuffle / recommendation evaluation harnesses
+│   └── tests/        # Unit, leakage, persistence, ML/DL & /api/v1/* companion API test suites
+├── frontend/         # Preserved Next.js Web Research Studio
+├── docs/             # Architecture, Official Spotify Policy, PKCE Setup, API v1, Privacy & Install Guides
+└── .env.example      # Environment configuration template
 ```
 
-### 2. Download & Build Unified Dataset
+---
+
+## Core Companion Features
+
+1. **Neural Music Discovery (`Discovery`):**
+   - Powered by a **Shared 128D Multimodal Track Encoder**, **Neural Collaborative Filtering (`NeuMF`)** for stable long-term taste, **2-Layer Causal Session Transformer** for immediate mood, **Reciprocal Rank Fusion (`RRF`)**, and **Maximal Marginal Relevance (`MMR`)**.
+   - Interactive **Familiarity ↔ Discovery** controller, human-readable recommendation explanations, **128D Similar Tracks & Similar Artists** exploration, one-click **Open in Spotify** handoff, and rich feedback actions (`Like`, `Dislike`, `More like this`, `Less like this`, `Request alternatives`).
+2. **Adaptive Shuffle Studio (`Shuffle`):**
+   - Sequences curated catalog playlists, AI Discovery mixes, or authorized Spotify playlists (with capability-aware metadata fallback when acoustic features are unavailable).
+   - 5 user-centric preset axes (**Artist Repetition**, **Genre Diversity**, **Musical Coherence**, **Discovery**, **Randomness**) with persistent preset saving.
+   - Side-by-side **Generated Sequence vs. Original Order** comparison, baseline metrics (`Artist Clump Rate`, `Mean/Min Artist Gap`, `Acoustic Smoothness`, `BPM Jump`), artist/genre/discovery distributions, and multi-format handoff (**Copy Spotify URIs**, **Export M3U/CSV**, **Open in Spotify**, or **Save Private Spotify Playlist** when authorized).
+3. **Provenance-Verified Music Insights (`Insights`):**
+   - Explicitly separates **Observed** companion interactions, **Inferred Preferences** (`LinUCB` contextual bandit drift & auto-decaying artist/genre fatigue memory), and **Model Predictions** (`ILD` diversity, repeated artist exposure, sonic profile) without fabricating external listening-time history.
+4. **Capability-Aware Spotify OAuth 2.0 PKCE & Full Independent Mode (`Settings`):**
+   - Works **100% independently** with zero Spotify credentials required.
+   - Optional official **Authorization Code with PKCE (`S256`)** integration (`SpotifyProvider`) with zero client secret, minimal scopes, no DOM scraping, and strict compliance with Spotify's prohibition on training ML/AI models on Spotify Content.
+   - Built-in **Disconnect Spotify**, **Reset Bandit Memory**, and **Delete Stored Application Data** privacy controls.
+
+---
+
+## Empirical ML & Adaptive Shuffle Benchmarks
+
+Evaluated on an independent catalog of **40,000 tracks** (8,146 artists, 114 genres), **6,932 playlists**, and **327,754 timestamped interactions** across **943 multi-session listeners**:
+
+| Model / Algorithm | Key Metric Highlights |
+| :--- | :--- |
+| **Multimodal NeuMF (`GMF + MLP`)** | `HR@10 = 76.00%` · `NDCG@10 = 0.6059` |
+| **Dual-Horizon Session Transformer** | `HR@10 = 77.50%` · `NDCG@10 = 0.6289` |
+| **Hybrid RRF + Discovery (`MMR`)** | **`HR@10 = 79.67%`** · **`NDCG@10 = 0.6631`** · `Coverage@20 = 13.19%` |
+| **Adaptive Shuffle (200 Playlists)** | Cuts artist clump rate from `11.40%` (Random) to **`7.41%`** (`5.05%` with quota urgency) while improving Genre Switch (`82.2%`), Acoustic Smoothness (`71.9%`), and Session `NDCG` (`0.525`). |
+
+---
+
+## Quick Start (Local Backend + Chrome Extension)
+
+### 1. Start the FastAPI & PyTorch Backend (`http://127.0.0.1:8000`)
 ```powershell
+# Windows PowerShell
 $env:PYTHONPATH = "."
-backend\.venv\Scripts\python.exe -m backend.data_pipeline.download_and_build --mpd-slices 10 --max-catalog 40000
+backend\.venv\Scripts\uvicorn.exe backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+```bash
+# macOS / Linux
+PYTHONPATH=. backend/.venv/bin/uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-### 3. Train Models on GPU & Run Benchmark Suites
-```powershell
-$env:PYTHONPATH = "."
-backend\.venv\Scripts\python.exe -m backend.training.train_and_evaluate
+### 2. Test & Build the Chrome Extension (`extension/dist/`)
+```bash
+cd extension
+npm install
+npm test
+npm run build
 ```
 
-### 4. Launch Backend API & Next.js Studio UI
-```powershell
-# Windows: .\start_dev.ps1   |   macOS / Linux: ./start_dev.sh
-# Or run manually in two terminals:
-# Terminal 1 — FastAPI Engine (http://127.0.0.1:8000)
-$env:PYTHONPATH = "."
-backend\.venv\Scripts\uvicorn.exe backend.app.main:app --host 127.0.0.1 --port 8000
-
-# Terminal 2 — Next.js Studio (http://localhost:3000)
-cd frontend
-npm.cmd install
-npm.cmd run dev
-```
+### 3. Load Unpacked in Google Chrome
+1. Open `chrome://extensions` and enable **Developer mode**.
+2. Click **Load unpacked** and select `SPOTIFY-THING/extension/dist`.
+3. Pin **SPOTIFY-THING** to the toolbar and click the icon to launch the companion popup.
 
 ---
 
-## Engineering Notes, Configuration & Persistence
+## Documentation Index
 
-- **CORS Configuration:** Allowed origins are controlled via `RESONANCE_CORS_ORIGINS` (comma-separated). Defaults safely to `http://localhost:3000,http://127.0.0.1:3000` with explicit `GET, POST, OPTIONS` methods and `Content-Type, Authorization` headers.
-- **Feedback State Persistence:** Per-user LinUCB bandit vectors, fatigue counters, and feedback events are persisted in SQLite (`WAL` mode + `IMMEDIATE` transactions) at `RESONANCE_FEEDBACK_DB` (default `data/artifacts/feedback_state.db`), surviving backend restarts with strict per-user isolation. For multi-instance cloud deployments, swap `SQLiteFeedbackStore` for a shared Redis hash store (optimistic locking / Lua script) or PostgreSQL `JSONB` with `SELECT ... FOR UPDATE`.
-- **Experimental Adaptive Shuffle Option:** The original Adaptive Shuffle (`quota_urgency_weight=0.0`) is preserved as the default. An opt-in remaining-quota urgency term (`quota_urgency_weight=0.40–0.75`) reduces artist clump rate by 26–32% across 200 playlists (5 seeds) with a small NDCG/smoothness tradeoff on artist-heavy playlists; see [docs/shuffle_experiment_report.md](docs/shuffle_experiment_report.md) for full mean ± std tables.
-- **Testing & CI:** GitHub Actions (`.github/workflows/ci.yml`) runs unit and persistence tests (`pytest backend/tests -m "not requires_dataset" -v`) plus the Next.js production build. `backend/tests/test_api_e2e.py` is explicitly marked `@pytest.mark.requires_dataset` and deselected in CI because it validates against the locally generated 40k-track Parquet catalog and trained checkpoints; run `pytest backend/tests -v` locally after building the dataset.
-- **License Scope:** Original source code and documentation are released under the [MIT License](LICENSE). External datasets downloaded at runtime (`maharshipandya/spotify-tracks-dataset`, `Spotify Million Playlist Dataset`, `Last.fm 1K`) and Spotify Embed widgets are not covered by the repository license and remain subject to their respective upstream terms.
+- [Extension Architecture](docs/EXTENSION_ARCHITECTURE.md)
+- [Official Spotify Integration & Policy Compliance](docs/SPOTIFY_INTEGRATION.md)
+- [Optional Spotify OAuth 2.0 (PKCE) Setup](docs/OAUTH_SETUP.md)
+- [Backend `/api/v1/*` API Reference](docs/API_INTEGRATION.md)
+- [Privacy & Security Model](docs/PRIVACY.md)
+- [Installation & Local Development Guide](docs/INSTALLATION.md)
+- [Adaptive Shuffle Multi-Seed Experiment Report](docs/shuffle_experiment_report.md)
+
+---
+
+## License Scope
+
+Original source code and documentation are released under the [MIT License](LICENSE). External research datasets downloaded locally for model training and Spotify platform services/trademarks remain subject to their respective upstream terms.
