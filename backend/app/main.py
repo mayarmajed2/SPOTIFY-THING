@@ -54,12 +54,16 @@ async def lifespan(app: FastAPI):
     feedback_db_env = os.getenv("RESONANCE_FEEDBACK_DB")
     feedback_db = Path(feedback_db_env) if feedback_db_env else (ARTIFACTS_DIR / "feedback_state.db")
     if (PROCESSED_DIR / "tracks.parquet").exists():
-        ENGINE = HybridRecommendationEngine(
-            processed_dir=PROCESSED_DIR,
-            artifacts_dir=ARTIFACTS_DIR,
-            device=device,
-            feedback_db_path=feedback_db,
-        )
+        try:
+            ENGINE = HybridRecommendationEngine(
+                processed_dir=PROCESSED_DIR,
+                artifacts_dir=ARTIFACTS_DIR,
+                device=device,
+                feedback_db_path=feedback_db,
+            )
+        except RuntimeError as exc:
+            ENGINE = None
+            print(f"[startup] Recommendation engine unavailable: {exc}")
     yield
 
 
@@ -69,9 +73,13 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
 def _parse_cors_origins() -> list[str]:
-    """Parse allowed CORS origins from RESONANCE_CORS_ORIGINS with safe localhost defaults."""
-    raw = os.getenv("RESONANCE_CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+    """Parse allowed CORS origins from RESONANCE_CORS_ORIGINS (or ALLOWED_ORIGINS) with safe localhost defaults."""
+    raw = os.getenv(
+        "RESONANCE_CORS_ORIGINS",
+        os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000"),
+    )
     origins = [o.strip().rstrip("/") for o in raw.split(",") if o.strip()]
     return origins or ["http://localhost:3000", "http://127.0.0.1:3000"]
 

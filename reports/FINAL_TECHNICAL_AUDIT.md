@@ -65,4 +65,4 @@ SPOTIFY-THING has undergone a full scientific audit and remediation across data 
 
 **Classification: `2. Scientifically Validated Prototype`**
 
-The system now has verified data lineage, automated zero-leakage guarantees, fixed causal Transformer masking, full-catalog statistical validation with honest regression reporting, separated shuffle evaluation protocols, and documented licensing/compliance boundaries. It is **not** yet a `Product-Ready Prototype` or `Commercially Ready Product` due to the open single-skip calibration, Hybrid RRF fix, single-instance SQLite store, and lack of commercially cleared training data / online human A/B validation.
+The system now has verified data lineage, automated zero-leakage guarantees, fixed causal Transformer masking, full-catalog statistical validation with honest regression reporting, separated shuffle evaluation protocols, and documented licensing/compliance boundaries. It is **not** yet a `Product-Ready Prototype` or `Commercially Ready Product` due to single-instance SQLite state and lack of commercially cleared training data / online human A/B validation.

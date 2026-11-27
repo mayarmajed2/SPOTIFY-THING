@@ -18,7 +18,7 @@ An end-to-end Machine Learning, Deep Learning, and Probabilistic Optimization pl
 
 ## Empirical Benchmark Highlights
 
-Trained and evaluated on a fused catalog of **40,000 Spotify tracks** (8,146 artists, 114 genres), **6,932 curated Spotify playlists**, and **2.06M matched timestamped Last.fm listening events** across **943 multi-session listeners**:
+Trained and evaluated on a fused catalog of **40,000 Spotify tracks** (8,146 artists, 114 genres), **6,932 curated Spotify playlists**, **2,067,551 matched timestamped Last.fm listening events**, and **327,754 retained timestamp-derived listening interactions** across **943 multi-session listeners**:
 
 ### 1. Next-Track Recommendation (Chronological Leave-Last-Out Split)
 

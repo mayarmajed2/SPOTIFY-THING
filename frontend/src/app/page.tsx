@@ -246,7 +246,7 @@ export default function ResonanceStudioPage() {
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-[#080b11] text-slate-200">
         <Disc3 className="w-10 h-10 text-emerald-400 animate-spin" />
         <p className="text-sm font-medium tracking-wide text-slate-400">
-          Loading Neural Models, Vector Index &amp; Music Catalog...
+          Loading Neural Models, Exact Vector Index &amp; Music Catalog...
         </p>
       </div>
     );

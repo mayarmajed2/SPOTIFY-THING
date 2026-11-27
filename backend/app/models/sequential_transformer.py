@@ -145,7 +145,6 @@ class DualHorizonSessionTransformer(nn.Module):
         if short_term_override is not None:
             # Allow user/UI to steer balance between stable taste and immediate session mood
             alpha = float(max(0.0, min(1.0, short_term_override)))
-            gate = (1.0 - alpha) * gate + alpha * (1.0 - alpha)
             u_fused = F.normalize((1.0 - alpha) * u_long + alpha * u_short, p=2, dim=-1)
             return u_fused, torch.full_like(gate, 1.0 - alpha)
 
