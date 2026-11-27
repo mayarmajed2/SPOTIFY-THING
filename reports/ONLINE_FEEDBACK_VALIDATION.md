@@ -34,7 +34,14 @@
 
 ---
 
-## 3. Critical Finding & Calibration Recommendation
-- **Single-Skip Overreaction:** In `UserFeedbackState.record_feedback`, a single `early_skip` currently adds `+0.35` to `genre_fatigue` (`-0.105` flat score penalty across every track of that genre) plus `-0.21` EMA embedding repulsion. As Scenario 2 proves, one accidental skip wipes out `94.6%` of the user's primary genre in Top-20.
-- **Recommended Calibration (Next Iteration):** Require `>= 2` skips within a rolling window before activating genre-wide fatigue (keeping a single skip strictly track- and artist-local), and increase neutral-play fatigue decay from `0.90` to `0.78` so temporary fatigue recovers smoothly.
-- **Persistence Verified:** `SQLiteFeedbackStore` (`WAL` mode + `BEGIN IMMEDIATE`) passes all restart-recovery, user-isolation, and multi-threaded concurrency tests in `test_feedback_persistence.py`.
+## 3. Critical Finding & Post-Calibration Verification
+- **Pre-Fix Overreaction:** Before calibration, a single `early_skip` dropped the user's dominant genre share in Top-20 from `40.33%` to `2.17%`, and 6 neutral plays only recovered it to `4.83%`.
+- **Calibration Applied ([online_feedback.py](file:///c:/Users/Mayoura/Desktop/SPOTIFY-THING/backend/app/engine/online_feedback.py)):**
+  - Require `>= 2` skips of the same genre (`genre_skip_counts[g] >= 2`) before activating genre-wide fatigue (1 skip remains strictly track- and artist-local with gentler `step_lr = 0.10`).
+  - Accelerated neutral-play fatigue decay (`0.90 → 0.78` for genres, `0.88 → 0.80` for artists).
+- **Verified Post-Fix Results (`phase_e_online_feedback_calibrated`):**
+  - **Scenario 2 (1 early skip):** Dominant genre share@20 = **`32.42%`** (gentle `-7.9 pp` nudge from `40.33%` baseline, `||Δu|| = 0.075`) — overreaction eliminated!
+  - **Scenario 3 (3 consecutive skips):** Dominant genre share@20 = **`0.00%`** — sustained skip suppression preserved!
+  - **Scenario 7 (2 skips → 6 neutral plays):** Dominant genre share@20 recovers nearly 4× faster (**`4.83% → 18.25%`**)!
+  - **Scenario 9 (Preference reversal: 3 skips + 3 likes):** Dominant `1.92%` → Target **`46.42%`**!
+- **Persistence Verified:** `SQLiteFeedbackStore` (`WAL` mode + `BEGIN IMMEDIATE`) persists `genre_skip_counts` alongside all LinUCB and fatigue state, passing all restart-recovery, user-isolation, and multi-threaded concurrency tests.

@@ -69,6 +69,7 @@ class UserFeedbackState:
         # Dynamic negative fatigue & positive affinity counters per artist / genre
         self.artist_fatigue: dict[int, float] = {}
         self.genre_fatigue: dict[int, float] = {}
+        self.genre_skip_counts: dict[int, int] = {}
         self.artist_boost: dict[int, float] = {}
         self.genre_boost: dict[int, float] = {}
 
@@ -100,13 +101,13 @@ class UserFeedbackState:
         else:
             reward = base_reward
 
-        # Decay existing short-term fatigue slightly at every step
+        # Decay existing short-term fatigue smoothly at every step so temporary fatigue recovers
         for k in list(self.artist_fatigue.keys()):
-            self.artist_fatigue[k] *= 0.88
+            self.artist_fatigue[k] *= 0.80
             if self.artist_fatigue[k] < 0.05:
                 del self.artist_fatigue[k]
         for k in list(self.genre_fatigue.keys()):
-            self.genre_fatigue[k] *= 0.90
+            self.genre_fatigue[k] *= 0.78
             if self.genre_fatigue[k] < 0.05:
                 del self.genre_fatigue[k]
 
@@ -115,8 +116,14 @@ class UserFeedbackState:
         self.A_diag += x * x
         self.b += reward * x
 
-        # Signed EMA residual shift on user taste vector
-        step_lr = 0.28 if abs(reward) >= 0.7 else 0.14
+        # Calibrated EMA residual shift: gentler on a single early_skip to avoid overreaction
+        if action == "early_skip":
+            prev_skips = self.genre_skip_counts.get(genre_idx, 0)
+            step_lr = 0.10 if prev_skips == 0 else 0.22
+        elif abs(reward) >= 0.7:
+            step_lr = 0.26
+        else:
+            step_lr = 0.14
         self.delta_u = 0.82 * self.delta_u + step_lr * reward * x
         norm = float(np.linalg.norm(self.delta_u))
         if norm > 0.65:
@@ -125,9 +132,11 @@ class UserFeedbackState:
         if action == "like":
             self.liked_items.add(item_idx)
             self.disliked_items.discard(item_idx)
+            self.genre_skip_counts.pop(genre_idx, None)
             self.artist_boost[artist_idx] = min(1.5, self.artist_boost.get(artist_idx, 0.0) + 0.45)
             self.genre_boost[genre_idx] = min(1.2, self.genre_boost.get(genre_idx, 0.0) + 0.30)
         elif action == "repeat":
+            self.genre_skip_counts.pop(genre_idx, None)
             self.artist_boost[artist_idx] = min(1.5, self.artist_boost.get(artist_idx, 0.0) + 0.35)
             self.genre_boost[genre_idx] = min(1.2, self.genre_boost.get(genre_idx, 0.0) + 0.25)
         elif action == "dislike":
@@ -137,8 +146,12 @@ class UserFeedbackState:
             self.genre_fatigue[genre_idx] = self.genre_fatigue.get(genre_idx, 0.0) + 0.50
         elif action == "early_skip":
             self.skipped_items.add(item_idx)
-            self.artist_fatigue[artist_idx] = self.artist_fatigue.get(artist_idx, 0.0) + 0.55
-            self.genre_fatigue[genre_idx] = self.genre_fatigue.get(genre_idx, 0.0) + 0.35
+            self.artist_fatigue[artist_idx] = self.artist_fatigue.get(artist_idx, 0.0) + 0.45
+            skip_cnt = self.genre_skip_counts.get(genre_idx, 0) + 1
+            self.genre_skip_counts[genre_idx] = skip_cnt
+            # Require >= 2 skips of the same genre before activating genre-wide fatigue
+            if skip_cnt >= 2:
+                self.genre_fatigue[genre_idx] = self.genre_fatigue.get(genre_idx, 0.0) + 0.35
 
         self.played_items_recent.append(item_idx)
         if len(self.played_items_recent) > 100:
@@ -195,6 +208,7 @@ class UserFeedbackState:
             "played_items_recent": [int(i) for i in self.played_items_recent[-100:]],
             "artist_fatigue": {str(k): float(v) for k, v in self.artist_fatigue.items()},
             "genre_fatigue": {str(k): float(v) for k, v in self.genre_fatigue.items()},
+            "genre_skip_counts": {str(k): int(v) for k, v in self.genre_skip_counts.items()},
             "artist_boost": {str(k): float(v) for k, v in self.artist_boost.items()},
             "genre_boost": {str(k): float(v) for k, v in self.genre_boost.items()},
             "events": [
@@ -229,6 +243,7 @@ class UserFeedbackState:
         state.played_items_recent = [int(i) for i in data.get("played_items_recent", [])]
         state.artist_fatigue = {int(k): float(v) for k, v in data.get("artist_fatigue", {}).items()}
         state.genre_fatigue = {int(k): float(v) for k, v in data.get("genre_fatigue", {}).items()}
+        state.genre_skip_counts = {int(k): int(v) for k, v in data.get("genre_skip_counts", {}).items()}
         state.artist_boost = {int(k): float(v) for k, v in data.get("artist_boost", {}).items()}
         state.genre_boost = {int(k): float(v) for k, v in data.get("genre_boost", {}).items()}
         state.events = [

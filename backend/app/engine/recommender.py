@@ -21,6 +21,27 @@ import pandas as pd
 import torch
 
 
+def reciprocal_rank_score(scores: np.ndarray, k_rrf: int = 60, positive_only: bool = False) -> np.ndarray:
+    """
+    Convert arbitrary score vector into bounded, outlier-proof Reciprocal Rank scores in [0, 1].
+    Prevents sparse CF spikes from hijacking full-catalog rankings when fused with dense embeddings.
+    """
+    n = len(scores)
+    out = np.zeros(n, dtype=np.float32)
+    if n == 0:
+        return out
+    if positive_only:
+        valid = np.flatnonzero(scores > 0.0)
+        if len(valid) == 0:
+            return out
+        order = valid[np.argsort(-scores[valid])]
+    else:
+        order = np.argsort(-scores)
+    ranks = np.arange(1, len(order) + 1, dtype=np.float32)
+    out[order] = (k_rrf + 1.0) / (k_rrf + ranks)
+    return out
+
+
 class ExactInnerProductIndex:
     """SIMD/BLAS-accelerated exact Inner Product vector index (drop-in for IndexFlatIP)."""
 
@@ -303,7 +324,8 @@ class HybridRecommendationEngine:
             it for it, act in zip(rep["recent_items"], rep["recent_actions"]) if act in (0, 5)
         ] + list(fb_state.disliked_items)
         cf_raw = self.item_cf.score_for_history(pos_seed, neg_seed)
-        cf_norm = cf_raw / (float(cf_raw.max()) + 1e-6)
+        cf_rrf = reciprocal_rank_score(cf_raw, k_rrf=60, positive_only=True)
+        cos_rrf = reciprocal_rank_score(cos_scores, k_rrf=60, positive_only=False)
 
         # 3. Contextual Bandit Exploration + Exploitation Bonus
         bandit_scores = fb_state.linucb_bonus(
@@ -321,13 +343,15 @@ class HybridRecommendationEngine:
         for g_idx, bst in fb_state.genre_boost.items():
             dyn_adj[self.genre_ids == g_idx] += 0.12 * bst
 
+        # Scale-calibrated Reciprocal Rank Fusion (RRF) between Dual-Horizon Transformer and sparse CF
         base_relevance = (
             0.55 * cos_scores
-            + 0.25 * cf_norm
+            + 0.22 * (0.78 * cos_rrf + 0.22 * cf_rrf)
             + 0.20 * bandit_scores
             + novelty_boost * 0.22 * self.item_novelty
             + dyn_adj
         )
+        cf_norm = cf_rrf
 
         for b_it in blocked_items:
             if 0 <= b_it < self.num_items:

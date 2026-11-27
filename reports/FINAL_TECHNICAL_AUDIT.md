@@ -27,7 +27,7 @@ SPOTIFY-THING has undergone a full scientific audit and remediation across data 
 - **Validated ([RECOMMENDATION_VALIDATION.md](RECOMMENDATION_VALIDATION.md)):**
   - `Dual-Horizon Transformer` (with causal left-padding fix) achieves **`43.00%` Full-Catalog HR@10** and **`0.3568` Full-Catalog NDCG@10** across all 40,000 tracks — outperforming `NeuMF — Full Multimodal` (`0.1089`, $p = 0.00025$) and `Item-KNN CF` (`0.1319`) by ~3×.
   - `NeuMF` ablations confirm `GMF + MLP` (`0.1089`) beats `GMF-only` (`0.0329`) and `MLP-only` (`0.0422`), with a positive trend from audio+genre modalities (`0.0925 → 0.1089`, $p = 0.207$).
-  - **Regression Caught:** Z-score blending sparse `Item-KNN CF` into `Dual-Horizon Transformer` degraded Full-Catalog NDCG@10 by `-45.3%` (`0.3568 → 0.1952`, $p = 0.00025$). **Action Required:** Replace z-score blending with Reciprocal Rank Fusion (RRF) or serve `Dual-Horizon Transformer` directly for full-catalog retrieval.
+  - **Regression Caught & Fixed:** Z-score blending sparse `Item-KNN CF` into `Dual-Horizon Transformer` degraded Full-Catalog NDCG@10 by `-45.3%` (`0.3568 → 0.1952`, $p = 0.00025$). Replacing it with **Reciprocal Rank Fusion (RRF)** in `recommender.py` recovered Full-Catalog NDCG@10 by **`+72.9%`** (`0.1952 → 0.3376`), raised Full-Catalog HR@10 to **`45.00%`**, and lifted Sampled NDCG@10 to **`0.6792`** ($p = 0.00025$).
 
 ## 5. Adaptive Shuffle
 - **Validated ([ADAPTIVE_SHUFFLE_VALIDATION.md](ADAPTIVE_SHUFFLE_VALIDATION.md)):**
@@ -39,7 +39,7 @@ SPOTIFY-THING has undergone a full scientific audit and remediation across data 
 ## 6. Online Feedback
 - **Validated ([ONLINE_FEEDBACK_VALIDATION.md](ONLINE_FEEDBACK_VALIDATION.md)):**
   - SQLite persistence (`WAL` mode + `RLock`) passes restart-recovery, user-isolation, and concurrency tests.
-  - **Overreaction Defect Caught:** A single `early_skip` drops the user's dominant genre from `40.33%` to `2.17%` in Top-20; genre-wide fatigue should require `>= 2` skips and decay faster on neutral plays.
+  - **Overreaction Defect Caught & Fixed:** Scenario 2 initially dropped dominant genre share from `40.33%` to `2.17%` on 1 skip; gating genre-wide fatigue at `>= 2` skips and accelerating decay (`0.78`) calibrated 1-skip share to **`32.42%`**, 3-skip suppression to **`0.00%`**, and 6-play recovery to **`18.25%`**.
 
 ## 7. Statistical Validation & Product Readiness
 - **Statistical Rigor:** Phase C reports 1,000-sample bootstrap 95% CIs and 4,000-permutation paired sign-flip p-values on both sampled and full-catalog protocols; Phase D reports 5-seed mean ± std across 200 unseen test playlists and 120 real users.

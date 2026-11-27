@@ -1617,5 +1617,77 @@
       }
     }
   },
-  "runtime_seconds": 288.34
+  "runtime_seconds": 288.34,
+  "phase_e_online_feedback_calibrated": {
+    "scenarios": {
+      "1_no_feedback": {
+        "dominant_genre_share@20": 0.4033,
+        "target_genre_share@20": 0.0067,
+        "mean_residual_norm": 0.0
+      },
+      "2_one_skip": {
+        "dominant_genre_share@20": 0.3242,
+        "target_genre_share@20": 0.0058,
+        "mean_residual_norm": 0.075
+      },
+      "3_three_consecutive_skips": {
+        "dominant_genre_share@20": 0.0,
+        "target_genre_share@20": 0.0092,
+        "mean_residual_norm": 0.2673
+      },
+      "4_six_consecutive_skips": {
+        "dominant_genre_share@20": 0.0,
+        "target_genre_share@20": 0.0125,
+        "mean_residual_norm": 0.4161
+      },
+      "5_repeated_likes_target": {
+        "dominant_genre_share@20": 0.105,
+        "target_genre_share@20": 0.6542,
+        "mean_residual_norm": 0.5546
+      },
+      "6_repeated_listens_target": {
+        "dominant_genre_share@20": 0.1567,
+        "target_genre_share@20": 0.3992,
+        "mean_residual_norm": 0.4714
+      },
+      "7_temporary_fatigue_then_neutral_decay": {
+        "dominant_genre_share@20": 0.1825,
+        "target_genre_share@20": 0.0033,
+        "mean_residual_norm": 0.2229
+      },
+      "8_contradictory_like_then_dislike": {
+        "dominant_genre_share@20": 0.3958,
+        "target_genre_share@20": 0.0,
+        "mean_residual_norm": 0.0468
+      },
+      "9_preference_reversal_3skip_3like": {
+        "dominant_genre_share@20": 0.0192,
+        "target_genre_share@20": 0.4642,
+        "mean_residual_norm": 0.4904
+      },
+      "10_return_to_previously_preferred_genre": {
+        "dominant_genre_share@20": 0.8117,
+        "target_genre_share@20": 0.0733,
+        "mean_residual_norm": 0.5584
+      }
+    },
+    "preference_reversal_ablations": {
+      "Static Profile": {
+        "dominant_genre_share@20": 0.4,
+        "target_genre_share@20": 0.0067
+      },
+      "LinUCB Only": {
+        "dominant_genre_share@20": 0.1292,
+        "target_genre_share@20": 0.0792
+      },
+      "Fatigue Memory Only": {
+        "dominant_genre_share@20": 0.0717,
+        "target_genre_share@20": 0.0742
+      },
+      "Combined System": {
+        "dominant_genre_share@20": 0.0192,
+        "target_genre_share@20": 0.4642
+      }
+    }
+  }
 }
