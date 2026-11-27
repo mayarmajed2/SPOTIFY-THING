@@ -307,6 +307,7 @@ def compare_shuffle_algorithms(req: ShuffleCompareRequest) -> dict[str, Any]:
             genre_cooldown=req.genre_cooldown,
             entropy_temperature=req.entropy_temperature,
             discovery_target=req.discovery_target,
+            quota_urgency_weight=req.quota_urgency_weight,
             seed=base_seed,
         ),
     )

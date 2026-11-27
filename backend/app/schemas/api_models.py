@@ -25,6 +25,7 @@ class ShuffleCompareRequest(BaseModel):
     genre_cooldown: int = Field(default=2, ge=0, le=8)
     entropy_temperature: float = Field(default=0.18, ge=0.02, le=1.0)
     discovery_target: float = Field(default=0.35, ge=0.0, le=1.0)
+    quota_urgency_weight: float = Field(default=0.0, ge=0.0, le=1.5)
     seed: int | None = Field(default=None)
 
 

@@ -18,6 +18,8 @@ interface ShuffleArenaTabProps {
   setArtistCooldown: (v: number) => void;
   entropyTemp: number;
   setEntropyTemp: (v: number) => void;
+  quotaUrgency: number;
+  setQuotaUrgency: (v: number) => void;
   shuffleData: ShuffleCompareResponse | null;
   onReshuffle: () => void;
   onSelectTrack: (track: ActivePlayerTrack) => void;
@@ -35,6 +37,8 @@ export function ShuffleArenaTab({
   setArtistCooldown,
   entropyTemp,
   setEntropyTemp,
+  quotaUrgency,
+  setQuotaUrgency,
   shuffleData,
   onReshuffle,
   onSelectTrack,
@@ -91,7 +95,7 @@ export function ShuffleArenaTab({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3 border-t border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 pt-3 border-t border-white/10">
           <div>
             <div className="flex justify-between text-xs mb-1">
               <span className="text-slate-300">Diversity &amp; Anti-Clump Weight</span>
@@ -160,6 +164,24 @@ export function ShuffleArenaTab({
               step={0.02}
               value={entropyTemp}
               onChange={(e) => setEntropyTemp(parseFloat(e.target.value))}
+              className="w-full"
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="text-slate-300">Quota Urgency (Exp.)</span>
+              <span className="font-mono text-cyan-300">
+                {quotaUrgency === 0 ? "Off (0.00)" : quotaUrgency.toFixed(2)}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0.0}
+              max={1.2}
+              step={0.05}
+              value={quotaUrgency}
+              onChange={(e) => setQuotaUrgency(parseFloat(e.target.value))}
               className="w-full"
             />
           </div>

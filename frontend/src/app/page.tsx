@@ -53,6 +53,7 @@ export default function ResonanceStudioPage() {
   const [shuffleFlow, setShuffleFlow] = useState<number>(0.55);
   const [artistCooldown, setArtistCooldown] = useState<number>(4);
   const [entropyTemp, setEntropyTemp] = useState<number>(0.18);
+  const [quotaUrgency, setQuotaUrgency] = useState<number>(0.0);
   const [shuffleData, setShuffleData] = useState<ShuffleCompareResponse | null>(
     null
   );
@@ -171,6 +172,7 @@ export default function ResonanceStudioPage() {
           genre_cooldown: 2,
           entropy_temperature: entropyTemp,
           discovery_target: discoveryLevel,
+          quota_urgency_weight: quotaUrgency,
           seed: newRandomSeed
             ? Math.floor(Math.random() * 90000) + 1
             : undefined,
@@ -187,6 +189,7 @@ export default function ResonanceStudioPage() {
       shuffleFlow,
       artistCooldown,
       entropyTemp,
+      quotaUrgency,
       discoveryLevel,
     ]
   );
@@ -401,6 +404,8 @@ export default function ResonanceStudioPage() {
             setArtistCooldown={setArtistCooldown}
             entropyTemp={entropyTemp}
             setEntropyTemp={setEntropyTemp}
+            quotaUrgency={quotaUrgency}
+            setQuotaUrgency={setQuotaUrgency}
             shuffleData={shuffleData}
             onReshuffle={() => runShuffleComparison(true)}
             onSelectTrack={setActiveTrack}
